@@ -3,6 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import '../../../core/theme/circadian_theme.dart';
 import '../../../core/theme/theme_provider.dart';
+import '../../../core/database/database_provider.dart';
+import '../../../core/database/app_database.dart';
+import 'package:drift/drift.dart' as drift;
+import 'package:uuid/uuid.dart';
 
 class DashboardScreen extends ConsumerStatefulWidget {
   const DashboardScreen({super.key});
@@ -58,23 +62,29 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Row(
-                        children: [
-                          Icon(
-                            _getPhaseIcon(phase),
-                            color: colorScheme.primary,
-                            size: 24,
-                          ),
-                          const SizedBox(width: 8),
-                          Text(
-                            _getPhaseTitle(phase),
-                            style: theme.textTheme.titleMedium?.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: colorScheme.onSurface,
+                      Expanded(
+                        child: Row(
+                          children: [
+                            Icon(
+                              _getPhaseIcon(phase),
+                              color: colorScheme.primary,
+                              size: 24,
                             ),
-                          ),
-                        ],
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Text(
+                                _getPhaseTitle(phase),
+                                style: theme.textTheme.titleMedium?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: colorScheme.onSurface,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
+                      const SizedBox(width: 8),
                       Container(
                         padding: const EdgeInsets.symmetric(
                           horizontal: 10,
@@ -201,6 +211,81 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
 
           const SizedBox(height: 20),
 
+          // Drift Offline Database Card
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Local SQLite (Drift)',
+                        style: theme.textTheme.titleSmall?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      ref.watch(entriesStreamProvider).when(
+                            data: (entries) => Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                              decoration: BoxDecoration(
+                                color: colorScheme.secondaryContainer,
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Text(
+                                '${entries.length} entries',
+                                style: TextStyle(
+                                  color: colorScheme.onSecondaryContainer,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ),
+                            loading: () => const SizedBox(
+                              width: 16,
+                              height: 16,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            ),
+                            error: (err, _) => const Text('Error', style: TextStyle(color: Colors.red)),
+                          ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Reactive offline SQLite table with UUID keys & JSON converters.',
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  FilledButton.tonalIcon(
+                    icon: const Icon(Icons.water_drop_outlined, size: 18),
+                    label: const Text('Log Quick Water Entry'),
+                    onPressed: () async {
+                      const uuid = Uuid();
+                      final db = ref.read(appDatabaseProvider);
+                      await db.upsertEntry(
+                        EntriesCompanion.insert(
+                          id: uuid.v4(),
+                          userId: 'local_user',
+                          type: 'water',
+                          value: 1.0,
+                          unit: const drift.Value('glass'),
+                          tags: const drift.Value(['Health', 'Hydration']),
+                          occurredAt: DateTime.now(),
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+          const SizedBox(height: 12),
+
           // Foundation Status
           Card(
             child: Padding(
@@ -228,7 +313,11 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                     completed: true,
                   ),
                   const _ChecklistItem(
-                    title: 'Offline database layer (Next Chunk)',
+                    title: 'Offline Drift SQLite database active',
+                    completed: true,
+                  ),
+                  const _ChecklistItem(
+                    title: 'Supabase Auth & Sync (Next Chunks)',
                     completed: false,
                   ),
                 ],
