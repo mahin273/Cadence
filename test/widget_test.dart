@@ -62,5 +62,19 @@ void main() {
 
     // Verify transition to Dusk phase
     expect(find.text('Warm Dusk Transition'), findsOneWidget);
+
+    // Tap account icon to open AuthModal
+    await tester.tap(find.byIcon(Icons.account_circle_outlined));
+    await tester.pumpAndSettle();
+
+    // Verify AuthModal is displayed with offline guest options
+    expect(find.text('Supabase Cloud Account'), findsOneWidget);
+    expect(find.text('Continue in Offline Guest Mode'), findsOneWidget);
+
+    // Tap continue as guest to dismiss
+    await tester.tap(find.text('Continue in Offline Guest Mode'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Supabase Cloud Account'), findsNothing);
   });
 }

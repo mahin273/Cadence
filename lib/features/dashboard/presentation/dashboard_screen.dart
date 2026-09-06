@@ -5,6 +5,8 @@ import '../../../core/theme/circadian_theme.dart';
 import '../../../core/theme/theme_provider.dart';
 import '../../../core/database/database_provider.dart';
 import '../../../core/database/app_database.dart';
+import '../../../core/supabase/auth_provider.dart';
+import '../../auth/presentation/auth_modal.dart';
 import 'package:drift/drift.dart' as drift;
 import 'package:uuid/uuid.dart';
 
@@ -41,6 +43,23 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
           ],
         ),
         actions: [
+          Consumer(
+            builder: (context, ref, _) {
+              final authState = ref.watch(authNotifierProvider);
+              return IconButton(
+                icon: Icon(
+                  authState.isAuthenticated
+                      ? Icons.account_circle
+                      : Icons.account_circle_outlined,
+                  color: authState.isAuthenticated ? colorScheme.primary : null,
+                ),
+                tooltip: authState.isAuthenticated
+                    ? 'Account: ${authState.user?.email}'
+                    : 'Account / Guest Mode',
+                onPressed: () => AuthModal.show(context),
+              );
+            },
+          ),
           IconButton(
             icon: const Icon(Icons.palette_outlined),
             tooltip: 'Theme Modes',
@@ -269,7 +288,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                       await db.upsertEntry(
                         EntriesCompanion.insert(
                           id: uuid.v4(),
-                          userId: 'local_user',
+                          userId: ref.read(activeUserIdProvider),
                           type: 'water',
                           value: 1.0,
                           unit: const drift.Value('glass'),
@@ -317,7 +336,11 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                     completed: true,
                   ),
                   const _ChecklistItem(
-                    title: 'Supabase Auth & Sync (Next Chunks)',
+                    title: 'Supabase Auth & GoTrue client wired',
+                    completed: true,
+                  ),
+                  const _ChecklistItem(
+                    title: 'Offline Sync Engine (Next Chunk)',
                     completed: false,
                   ),
                 ],
