@@ -6,6 +6,8 @@ import '../../../core/theme/theme_provider.dart';
 import '../../../core/database/database_provider.dart';
 import '../../../core/database/app_database.dart';
 import '../../../core/supabase/auth_provider.dart';
+import '../../../core/sync/sync_provider.dart';
+import '../../../core/sync/sync_state.dart';
 import '../../auth/presentation/auth_modal.dart';
 import 'package:drift/drift.dart' as drift;
 import 'package:uuid/uuid.dart';
@@ -43,6 +45,39 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
           ],
         ),
         actions: [
+          Consumer(
+            builder: (context, ref, _) {
+              final syncInfo = ref.watch(syncNotifierProvider);
+              final unsyncedCount =
+                  ref.watch(unsyncedEntriesCountProvider).value ?? 0;
+
+              Widget syncIcon;
+              if (syncInfo.status == SyncStatus.syncing) {
+                syncIcon = const SizedBox(
+                  width: 16,
+                  height: 16,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                );
+              } else if (syncInfo.status == SyncStatus.offline) {
+                syncIcon = const Icon(Icons.cloud_off_outlined);
+              } else if (syncInfo.status == SyncStatus.error) {
+                syncIcon = const Icon(Icons.sync_problem, color: Colors.orange);
+              } else {
+                syncIcon = const Icon(Icons.cloud_sync_outlined);
+              }
+
+              return IconButton(
+                icon: Badge(
+                  isLabelVisible: unsyncedCount > 0,
+                  label: Text('$unsyncedCount'),
+                  child: syncIcon,
+                ),
+                tooltip: syncInfo.message ?? 'Sync now',
+                onPressed: () =>
+                    ref.read(syncNotifierProvider.notifier).syncNow(),
+              );
+            },
+          ),
           Consumer(
             builder: (context, ref, _) {
               final authState = ref.watch(authNotifierProvider);
@@ -305,6 +340,104 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
 
           const SizedBox(height: 12),
 
+          // Offline Sync Engine Card
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          Icon(Icons.sync_rounded,
+                              color: colorScheme.primary, size: 20),
+                          const SizedBox(width: 8),
+                          Text(
+                            'Offline Sync Engine',
+                            style: theme.textTheme.titleSmall?.copyWith(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                      Consumer(
+                        builder: (context, ref, _) {
+                          final syncInfo = ref.watch(syncNotifierProvider);
+                          return Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 8, vertical: 2),
+                            decoration: BoxDecoration(
+                              color: _syncStatusColor(
+                                  syncInfo.status, colorScheme),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Text(
+                              syncInfo.status.name.toUpperCase(),
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 10,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  Consumer(
+                    builder: (context, ref, _) {
+                      final syncInfo = ref.watch(syncNotifierProvider);
+                      final unsynced =
+                          ref.watch(unsyncedEntriesCountProvider).value ?? 0;
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            syncInfo.message ??
+                                'Automatic push/pull with Last-Write-Wins conflict resolution.',
+                            style: theme.textTheme.bodySmall?.copyWith(
+                              color: colorScheme.onSurfaceVariant,
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          Row(
+                            children: [
+                              Text(
+                                'Unsynced in SQLite: $unsynced',
+                                style: theme.textTheme.labelMedium?.copyWith(
+                                  color: unsynced > 0
+                                      ? colorScheme.error
+                                      : colorScheme.onSurfaceVariant,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const Spacer(),
+                              FilledButton.tonalIcon(
+                                icon: const Icon(Icons.refresh_rounded, size: 16),
+                                label: const Text('Sync Now'),
+                                onPressed: () {
+                                  ref
+                                      .read(syncNotifierProvider.notifier)
+                                      .syncNow();
+                                },
+                              ),
+                            ],
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+          const SizedBox(height: 12),
+
           // Foundation Status
           Card(
             child: Padding(
@@ -340,8 +473,8 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                     completed: true,
                   ),
                   const _ChecklistItem(
-                    title: 'Offline Sync Engine (Next Chunk)',
-                    completed: false,
+                    title: 'Offline-first Drift & Supabase sync engine active',
+                    completed: true,
                   ),
                 ],
               ),
@@ -380,6 +513,21 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
         ],
       ),
     );
+  }
+
+  Color _syncStatusColor(SyncStatus status, ColorScheme colors) {
+    switch (status) {
+      case SyncStatus.synced:
+        return Colors.green;
+      case SyncStatus.syncing:
+        return colors.primary;
+      case SyncStatus.offline:
+        return Colors.grey;
+      case SyncStatus.error:
+        return colors.error;
+      case SyncStatus.idle:
+        return colors.secondary;
+    }
   }
 
   IconData _getPhaseIcon(CircadianPhase phase) {

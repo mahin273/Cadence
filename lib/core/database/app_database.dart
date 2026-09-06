@@ -55,9 +55,33 @@ class AppDatabase extends _$AppDatabase {
     return (select(entries)..where((tbl) => tbl.isSynced.equals(false))).get();
   }
 
+  /// Watch count of unsynced entries for UI badges and indicators.
+  Stream<int> watchUnsyncedCount() {
+    final count = entries.id.count();
+    final query = selectOnly(entries)
+      ..addColumns([count])
+      ..where(entries.isSynced.equals(false));
+    return query.map((row) => row.read(count) ?? 0).watchSingle();
+  }
+
+  /// Retrieve single entry by UUID for conflict resolution.
+  Future<Entry?> getEntryById(String id) {
+    return (select(entries)..where((tbl) => tbl.id.equals(id))).getSingleOrNull();
+  }
+
   /// Mark an entry as successfully synced with remote Supabase DB.
   Future<int> markAsSynced(String id) {
     return (update(entries)..where((tbl) => tbl.id.equals(id))).write(
+      const EntriesCompanion(
+        isSynced: Value(true),
+      ),
+    );
+  }
+
+  /// Mark a batch of entries as successfully synced in a single query.
+  Future<int> markBatchAsSynced(List<String> ids) {
+    if (ids.isEmpty) return Future.value(0);
+    return (update(entries)..where((tbl) => tbl.id.isIn(ids))).write(
       const EntriesCompanion(
         isSynced: Value(true),
       ),

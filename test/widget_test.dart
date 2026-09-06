@@ -76,5 +76,9 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Supabase Cloud Account'), findsNothing);
+
+    // Unmount widget tree and advance timers to flush Drift StreamQueryStore cleanup timers
+    await tester.pumpWidget(const SizedBox());
+    await tester.pump(const Duration(milliseconds: 50));
   });
 }
