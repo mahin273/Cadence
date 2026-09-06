@@ -77,6 +77,37 @@ void main() {
 
     expect(find.text('Supabase Cloud Account'), findsNothing);
 
+    // Verify Activity Feed section and filter chips
+    expect(find.text("Today's Activity Feed"), findsOneWidget);
+    expect(find.text('All Activity'), findsOneWidget);
+    expect(find.text('Water'), findsOneWidget);
+    expect(find.text('Habits'), findsOneWidget);
+
+    // Tap FloatingActionButton Quick Log
+    final fab = find.widgetWithText(FloatingActionButton, 'Quick Log');
+    expect(fab, findsOneWidget);
+    await tester.tap(fab);
+    await tester.pumpAndSettle();
+
+    // Verify QuickLogModal appears
+    expect(find.text('Quick Log Entry'), findsOneWidget);
+
+    // Select Habit segment
+    await tester.tap(find.text('Habit'));
+    await tester.pumpAndSettle();
+
+    // Enter habit title
+    await tester.enterText(find.byType(TextField).first, 'Read 20 pages');
+    await tester.pumpAndSettle();
+
+    // Tap Save Entry
+    await tester.tap(find.text('Save Entry'));
+    await tester.pumpAndSettle();
+
+    // Verify modal is dismissed and new habit entry appears in feed
+    expect(find.text('Quick Log Entry'), findsNothing);
+    expect(find.text('Read 20 pages'), findsOneWidget);
+
     // Unmount widget tree and advance timers to flush Drift StreamQueryStore cleanup timers
     await tester.pumpWidget(const SizedBox());
     await tester.pump(const Duration(milliseconds: 50));

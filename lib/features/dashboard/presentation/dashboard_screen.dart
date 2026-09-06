@@ -4,13 +4,13 @@ import 'package:intl/intl.dart';
 import '../../../core/theme/circadian_theme.dart';
 import '../../../core/theme/theme_provider.dart';
 import '../../../core/database/database_provider.dart';
-import '../../../core/database/app_database.dart';
 import '../../../core/supabase/auth_provider.dart';
 import '../../../core/sync/sync_provider.dart';
 import '../../../core/sync/sync_state.dart';
 import '../../auth/presentation/auth_modal.dart';
-import 'package:drift/drift.dart' as drift;
-import 'package:uuid/uuid.dart';
+import '../../entries/presentation/quick_log_modal.dart';
+import '../../entries/presentation/entries_feed.dart';
+import '../../entries/providers/entries_provider.dart';
 
 class DashboardScreen extends ConsumerStatefulWidget {
   const DashboardScreen({super.key});
@@ -318,19 +318,13 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                     icon: const Icon(Icons.water_drop_outlined, size: 18),
                     label: const Text('Log Quick Water Entry'),
                     onPressed: () async {
-                      const uuid = Uuid();
-                      final db = ref.read(appDatabaseProvider);
-                      await db.upsertEntry(
-                        EntriesCompanion.insert(
-                          id: uuid.v4(),
-                          userId: ref.read(activeUserIdProvider),
-                          type: 'water',
-                          value: 1.0,
-                          unit: const drift.Value('glass'),
-                          tags: const drift.Value(['Health', 'Hydration']),
-                          occurredAt: DateTime.now(),
-                        ),
-                      );
+                      await ref.read(entryControllerProvider).logEntry(
+                            type: 'water',
+                            value: 1.0,
+                            unit: 'glass',
+                            tags: ['Health', 'Hydration'],
+                            note: 'Quick hydration log',
+                          );
                     },
                   ),
                 ],
@@ -406,16 +400,18 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                           const SizedBox(height: 10),
                           Row(
                             children: [
-                              Text(
-                                'Unsynced in SQLite: $unsynced',
-                                style: theme.textTheme.labelMedium?.copyWith(
-                                  color: unsynced > 0
-                                      ? colorScheme.error
-                                      : colorScheme.onSurfaceVariant,
-                                  fontWeight: FontWeight.bold,
+                              Expanded(
+                                child: Text(
+                                  'Unsynced in SQLite: $unsynced',
+                                  style: theme.textTheme.labelMedium?.copyWith(
+                                    color: unsynced > 0
+                                        ? colorScheme.error
+                                        : colorScheme.onSurfaceVariant,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
                                 ),
                               ),
-                              const Spacer(),
                               FilledButton.tonalIcon(
                                 icon: const Icon(Icons.refresh_rounded, size: 16),
                                 label: const Text('Sync Now'),
@@ -436,7 +432,32 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
             ),
           ),
 
-          const SizedBox(height: 12),
+          const SizedBox(height: 16),
+
+          // Activity & Telemetry Feed Header
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: Text(
+                  "Today's Activity Feed",
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              TextButton.icon(
+                icon: const Icon(Icons.add_circle_outline, size: 18),
+                label: const Text('Quick Log'),
+                onPressed: () => QuickLogModal.show(context),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          const EntriesFeed(),
+
+          const SizedBox(height: 16),
 
           // Foundation Status
           Card(
@@ -476,11 +497,20 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                     title: 'Offline-first Drift & Supabase sync engine active',
                     completed: true,
                   ),
+                  const _ChecklistItem(
+                    title: 'Shared entries & multi-category feed active',
+                    completed: true,
+                  ),
                 ],
               ),
             ),
           ),
         ],
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () => QuickLogModal.show(context),
+        icon: const Icon(Icons.add_rounded),
+        label: const Text('Quick Log'),
       ),
       bottomNavigationBar: NavigationBar(
         selectedIndex: _selectedTabIndex,
