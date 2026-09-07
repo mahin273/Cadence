@@ -20,6 +20,7 @@ import '../../study/widgets/focus_timer_card.dart';
 import '../../review/presentation/weekly_review_view.dart';
 import '../../review/providers/weekly_review_providers.dart';
 import '../../analytics/widgets/screen_time_card.dart';
+import '../../../core/security/presentation/security_settings_view.dart';
 
 class DashboardScreen extends ConsumerStatefulWidget {
   const DashboardScreen({super.key});
@@ -114,6 +115,13 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
             tooltip: 'Weekly Review',
             onPressed: () => Navigator.of(context).push(
               MaterialPageRoute(builder: (_) => const WeeklyReviewView()),
+            ),
+          ),
+          IconButton(
+            icon: const Icon(Icons.shield_outlined),
+            tooltip: 'Security & Backup',
+            onPressed: () => Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const SecuritySettingsView()),
             ),
           ),
         ],
