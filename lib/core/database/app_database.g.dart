@@ -7855,6 +7855,593 @@ class StudySessionsCompanion extends UpdateCompanion<StudySession> {
   }
 }
 
+class $WeeklyReviewsTable extends WeeklyReviews
+    with TableInfo<$WeeklyReviewsTable, WeeklyReview> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $WeeklyReviewsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _userIdMeta = const VerificationMeta('userId');
+  @override
+  late final GeneratedColumn<String> userId = GeneratedColumn<String>(
+    'user_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _weekStartDateMeta = const VerificationMeta(
+    'weekStartDate',
+  );
+  @override
+  late final GeneratedColumn<DateTime> weekStartDate =
+      GeneratedColumn<DateTime>(
+        'week_start_date',
+        aliasedName,
+        false,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: true,
+      );
+  static const VerificationMeta _weekEndDateMeta = const VerificationMeta(
+    'weekEndDate',
+  );
+  @override
+  late final GeneratedColumn<DateTime> weekEndDate = GeneratedColumn<DateTime>(
+    'week_end_date',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _compositeScoreMeta = const VerificationMeta(
+    'compositeScore',
+  );
+  @override
+  late final GeneratedColumn<int> compositeScore = GeneratedColumn<int>(
+    'composite_score',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _summaryJsonMeta = const VerificationMeta(
+    'summaryJson',
+  );
+  @override
+  late final GeneratedColumn<String> summaryJson = GeneratedColumn<String>(
+    'summary_json',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _reflectionNotesMeta = const VerificationMeta(
+    'reflectionNotes',
+  );
+  @override
+  late final GeneratedColumn<String> reflectionNotes = GeneratedColumn<String>(
+    'reflection_notes',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  static const VerificationMeta _isSyncedMeta = const VerificationMeta(
+    'isSynced',
+  );
+  @override
+  late final GeneratedColumn<bool> isSynced = GeneratedColumn<bool>(
+    'is_synced',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_synced" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    userId,
+    weekStartDate,
+    weekEndDate,
+    compositeScore,
+    summaryJson,
+    reflectionNotes,
+    createdAt,
+    isSynced,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'weekly_reviews';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<WeeklyReview> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('user_id')) {
+      context.handle(
+        _userIdMeta,
+        userId.isAcceptableOrUnknown(data['user_id']!, _userIdMeta),
+      );
+    }
+    if (data.containsKey('week_start_date')) {
+      context.handle(
+        _weekStartDateMeta,
+        weekStartDate.isAcceptableOrUnknown(
+          data['week_start_date']!,
+          _weekStartDateMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_weekStartDateMeta);
+    }
+    if (data.containsKey('week_end_date')) {
+      context.handle(
+        _weekEndDateMeta,
+        weekEndDate.isAcceptableOrUnknown(
+          data['week_end_date']!,
+          _weekEndDateMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_weekEndDateMeta);
+    }
+    if (data.containsKey('composite_score')) {
+      context.handle(
+        _compositeScoreMeta,
+        compositeScore.isAcceptableOrUnknown(
+          data['composite_score']!,
+          _compositeScoreMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_compositeScoreMeta);
+    }
+    if (data.containsKey('summary_json')) {
+      context.handle(
+        _summaryJsonMeta,
+        summaryJson.isAcceptableOrUnknown(
+          data['summary_json']!,
+          _summaryJsonMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_summaryJsonMeta);
+    }
+    if (data.containsKey('reflection_notes')) {
+      context.handle(
+        _reflectionNotesMeta,
+        reflectionNotes.isAcceptableOrUnknown(
+          data['reflection_notes']!,
+          _reflectionNotesMeta,
+        ),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    }
+    if (data.containsKey('is_synced')) {
+      context.handle(
+        _isSyncedMeta,
+        isSynced.isAcceptableOrUnknown(data['is_synced']!, _isSyncedMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  WeeklyReview map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return WeeklyReview(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      userId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}user_id'],
+      ),
+      weekStartDate: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}week_start_date'],
+      )!,
+      weekEndDate: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}week_end_date'],
+      )!,
+      compositeScore: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}composite_score'],
+      )!,
+      summaryJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}summary_json'],
+      )!,
+      reflectionNotes: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}reflection_notes'],
+      ),
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      isSynced: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_synced'],
+      )!,
+    );
+  }
+
+  @override
+  $WeeklyReviewsTable createAlias(String alias) {
+    return $WeeklyReviewsTable(attachedDatabase, alias);
+  }
+}
+
+class WeeklyReview extends DataClass implements Insertable<WeeklyReview> {
+  final String id;
+  final String? userId;
+  final DateTime weekStartDate;
+  final DateTime weekEndDate;
+  final int compositeScore;
+  final String summaryJson;
+  final String? reflectionNotes;
+  final DateTime createdAt;
+  final bool isSynced;
+  const WeeklyReview({
+    required this.id,
+    this.userId,
+    required this.weekStartDate,
+    required this.weekEndDate,
+    required this.compositeScore,
+    required this.summaryJson,
+    this.reflectionNotes,
+    required this.createdAt,
+    required this.isSynced,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    if (!nullToAbsent || userId != null) {
+      map['user_id'] = Variable<String>(userId);
+    }
+    map['week_start_date'] = Variable<DateTime>(weekStartDate);
+    map['week_end_date'] = Variable<DateTime>(weekEndDate);
+    map['composite_score'] = Variable<int>(compositeScore);
+    map['summary_json'] = Variable<String>(summaryJson);
+    if (!nullToAbsent || reflectionNotes != null) {
+      map['reflection_notes'] = Variable<String>(reflectionNotes);
+    }
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['is_synced'] = Variable<bool>(isSynced);
+    return map;
+  }
+
+  WeeklyReviewsCompanion toCompanion(bool nullToAbsent) {
+    return WeeklyReviewsCompanion(
+      id: Value(id),
+      userId: userId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(userId),
+      weekStartDate: Value(weekStartDate),
+      weekEndDate: Value(weekEndDate),
+      compositeScore: Value(compositeScore),
+      summaryJson: Value(summaryJson),
+      reflectionNotes: reflectionNotes == null && nullToAbsent
+          ? const Value.absent()
+          : Value(reflectionNotes),
+      createdAt: Value(createdAt),
+      isSynced: Value(isSynced),
+    );
+  }
+
+  factory WeeklyReview.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return WeeklyReview(
+      id: serializer.fromJson<String>(json['id']),
+      userId: serializer.fromJson<String?>(json['userId']),
+      weekStartDate: serializer.fromJson<DateTime>(json['weekStartDate']),
+      weekEndDate: serializer.fromJson<DateTime>(json['weekEndDate']),
+      compositeScore: serializer.fromJson<int>(json['compositeScore']),
+      summaryJson: serializer.fromJson<String>(json['summaryJson']),
+      reflectionNotes: serializer.fromJson<String?>(json['reflectionNotes']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      isSynced: serializer.fromJson<bool>(json['isSynced']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'userId': serializer.toJson<String?>(userId),
+      'weekStartDate': serializer.toJson<DateTime>(weekStartDate),
+      'weekEndDate': serializer.toJson<DateTime>(weekEndDate),
+      'compositeScore': serializer.toJson<int>(compositeScore),
+      'summaryJson': serializer.toJson<String>(summaryJson),
+      'reflectionNotes': serializer.toJson<String?>(reflectionNotes),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'isSynced': serializer.toJson<bool>(isSynced),
+    };
+  }
+
+  WeeklyReview copyWith({
+    String? id,
+    Value<String?> userId = const Value.absent(),
+    DateTime? weekStartDate,
+    DateTime? weekEndDate,
+    int? compositeScore,
+    String? summaryJson,
+    Value<String?> reflectionNotes = const Value.absent(),
+    DateTime? createdAt,
+    bool? isSynced,
+  }) => WeeklyReview(
+    id: id ?? this.id,
+    userId: userId.present ? userId.value : this.userId,
+    weekStartDate: weekStartDate ?? this.weekStartDate,
+    weekEndDate: weekEndDate ?? this.weekEndDate,
+    compositeScore: compositeScore ?? this.compositeScore,
+    summaryJson: summaryJson ?? this.summaryJson,
+    reflectionNotes: reflectionNotes.present
+        ? reflectionNotes.value
+        : this.reflectionNotes,
+    createdAt: createdAt ?? this.createdAt,
+    isSynced: isSynced ?? this.isSynced,
+  );
+  WeeklyReview copyWithCompanion(WeeklyReviewsCompanion data) {
+    return WeeklyReview(
+      id: data.id.present ? data.id.value : this.id,
+      userId: data.userId.present ? data.userId.value : this.userId,
+      weekStartDate: data.weekStartDate.present
+          ? data.weekStartDate.value
+          : this.weekStartDate,
+      weekEndDate: data.weekEndDate.present
+          ? data.weekEndDate.value
+          : this.weekEndDate,
+      compositeScore: data.compositeScore.present
+          ? data.compositeScore.value
+          : this.compositeScore,
+      summaryJson: data.summaryJson.present
+          ? data.summaryJson.value
+          : this.summaryJson,
+      reflectionNotes: data.reflectionNotes.present
+          ? data.reflectionNotes.value
+          : this.reflectionNotes,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      isSynced: data.isSynced.present ? data.isSynced.value : this.isSynced,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('WeeklyReview(')
+          ..write('id: $id, ')
+          ..write('userId: $userId, ')
+          ..write('weekStartDate: $weekStartDate, ')
+          ..write('weekEndDate: $weekEndDate, ')
+          ..write('compositeScore: $compositeScore, ')
+          ..write('summaryJson: $summaryJson, ')
+          ..write('reflectionNotes: $reflectionNotes, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('isSynced: $isSynced')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    userId,
+    weekStartDate,
+    weekEndDate,
+    compositeScore,
+    summaryJson,
+    reflectionNotes,
+    createdAt,
+    isSynced,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is WeeklyReview &&
+          other.id == this.id &&
+          other.userId == this.userId &&
+          other.weekStartDate == this.weekStartDate &&
+          other.weekEndDate == this.weekEndDate &&
+          other.compositeScore == this.compositeScore &&
+          other.summaryJson == this.summaryJson &&
+          other.reflectionNotes == this.reflectionNotes &&
+          other.createdAt == this.createdAt &&
+          other.isSynced == this.isSynced);
+}
+
+class WeeklyReviewsCompanion extends UpdateCompanion<WeeklyReview> {
+  final Value<String> id;
+  final Value<String?> userId;
+  final Value<DateTime> weekStartDate;
+  final Value<DateTime> weekEndDate;
+  final Value<int> compositeScore;
+  final Value<String> summaryJson;
+  final Value<String?> reflectionNotes;
+  final Value<DateTime> createdAt;
+  final Value<bool> isSynced;
+  final Value<int> rowid;
+  const WeeklyReviewsCompanion({
+    this.id = const Value.absent(),
+    this.userId = const Value.absent(),
+    this.weekStartDate = const Value.absent(),
+    this.weekEndDate = const Value.absent(),
+    this.compositeScore = const Value.absent(),
+    this.summaryJson = const Value.absent(),
+    this.reflectionNotes = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.isSynced = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  WeeklyReviewsCompanion.insert({
+    required String id,
+    this.userId = const Value.absent(),
+    required DateTime weekStartDate,
+    required DateTime weekEndDate,
+    required int compositeScore,
+    required String summaryJson,
+    this.reflectionNotes = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.isSynced = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       weekStartDate = Value(weekStartDate),
+       weekEndDate = Value(weekEndDate),
+       compositeScore = Value(compositeScore),
+       summaryJson = Value(summaryJson);
+  static Insertable<WeeklyReview> custom({
+    Expression<String>? id,
+    Expression<String>? userId,
+    Expression<DateTime>? weekStartDate,
+    Expression<DateTime>? weekEndDate,
+    Expression<int>? compositeScore,
+    Expression<String>? summaryJson,
+    Expression<String>? reflectionNotes,
+    Expression<DateTime>? createdAt,
+    Expression<bool>? isSynced,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (userId != null) 'user_id': userId,
+      if (weekStartDate != null) 'week_start_date': weekStartDate,
+      if (weekEndDate != null) 'week_end_date': weekEndDate,
+      if (compositeScore != null) 'composite_score': compositeScore,
+      if (summaryJson != null) 'summary_json': summaryJson,
+      if (reflectionNotes != null) 'reflection_notes': reflectionNotes,
+      if (createdAt != null) 'created_at': createdAt,
+      if (isSynced != null) 'is_synced': isSynced,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  WeeklyReviewsCompanion copyWith({
+    Value<String>? id,
+    Value<String?>? userId,
+    Value<DateTime>? weekStartDate,
+    Value<DateTime>? weekEndDate,
+    Value<int>? compositeScore,
+    Value<String>? summaryJson,
+    Value<String?>? reflectionNotes,
+    Value<DateTime>? createdAt,
+    Value<bool>? isSynced,
+    Value<int>? rowid,
+  }) {
+    return WeeklyReviewsCompanion(
+      id: id ?? this.id,
+      userId: userId ?? this.userId,
+      weekStartDate: weekStartDate ?? this.weekStartDate,
+      weekEndDate: weekEndDate ?? this.weekEndDate,
+      compositeScore: compositeScore ?? this.compositeScore,
+      summaryJson: summaryJson ?? this.summaryJson,
+      reflectionNotes: reflectionNotes ?? this.reflectionNotes,
+      createdAt: createdAt ?? this.createdAt,
+      isSynced: isSynced ?? this.isSynced,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (userId.present) {
+      map['user_id'] = Variable<String>(userId.value);
+    }
+    if (weekStartDate.present) {
+      map['week_start_date'] = Variable<DateTime>(weekStartDate.value);
+    }
+    if (weekEndDate.present) {
+      map['week_end_date'] = Variable<DateTime>(weekEndDate.value);
+    }
+    if (compositeScore.present) {
+      map['composite_score'] = Variable<int>(compositeScore.value);
+    }
+    if (summaryJson.present) {
+      map['summary_json'] = Variable<String>(summaryJson.value);
+    }
+    if (reflectionNotes.present) {
+      map['reflection_notes'] = Variable<String>(reflectionNotes.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (isSynced.present) {
+      map['is_synced'] = Variable<bool>(isSynced.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('WeeklyReviewsCompanion(')
+          ..write('id: $id, ')
+          ..write('userId: $userId, ')
+          ..write('weekStartDate: $weekStartDate, ')
+          ..write('weekEndDate: $weekEndDate, ')
+          ..write('compositeScore: $compositeScore, ')
+          ..write('summaryJson: $summaryJson, ')
+          ..write('reflectionNotes: $reflectionNotes, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('isSynced: $isSynced, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -7871,6 +8458,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $RoutineCompletionsTable routineCompletions =
       $RoutineCompletionsTable(this);
   late final $StudySessionsTable studySessions = $StudySessionsTable(this);
+  late final $WeeklyReviewsTable weeklyReviews = $WeeklyReviewsTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -7888,6 +8476,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     routineItems,
     routineCompletions,
     studySessions,
+    weeklyReviews,
   ];
   @override
   StreamQueryUpdateRules get streamUpdateRules => const StreamQueryUpdateRules([
@@ -12709,6 +13298,301 @@ typedef $$StudySessionsTableProcessedTableManager =
       StudySession,
       PrefetchHooks Function()
     >;
+typedef $$WeeklyReviewsTableCreateCompanionBuilder =
+    WeeklyReviewsCompanion Function({
+      required String id,
+      Value<String?> userId,
+      required DateTime weekStartDate,
+      required DateTime weekEndDate,
+      required int compositeScore,
+      required String summaryJson,
+      Value<String?> reflectionNotes,
+      Value<DateTime> createdAt,
+      Value<bool> isSynced,
+      Value<int> rowid,
+    });
+typedef $$WeeklyReviewsTableUpdateCompanionBuilder =
+    WeeklyReviewsCompanion Function({
+      Value<String> id,
+      Value<String?> userId,
+      Value<DateTime> weekStartDate,
+      Value<DateTime> weekEndDate,
+      Value<int> compositeScore,
+      Value<String> summaryJson,
+      Value<String?> reflectionNotes,
+      Value<DateTime> createdAt,
+      Value<bool> isSynced,
+      Value<int> rowid,
+    });
+
+class $$WeeklyReviewsTableFilterComposer
+    extends Composer<_$AppDatabase, $WeeklyReviewsTable> {
+  $$WeeklyReviewsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get userId => $composableBuilder(
+    column: $table.userId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get weekStartDate => $composableBuilder(
+    column: $table.weekStartDate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get weekEndDate => $composableBuilder(
+    column: $table.weekEndDate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get compositeScore => $composableBuilder(
+    column: $table.compositeScore,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get summaryJson => $composableBuilder(
+    column: $table.summaryJson,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get reflectionNotes => $composableBuilder(
+    column: $table.reflectionNotes,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isSynced => $composableBuilder(
+    column: $table.isSynced,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$WeeklyReviewsTableOrderingComposer
+    extends Composer<_$AppDatabase, $WeeklyReviewsTable> {
+  $$WeeklyReviewsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get userId => $composableBuilder(
+    column: $table.userId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get weekStartDate => $composableBuilder(
+    column: $table.weekStartDate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get weekEndDate => $composableBuilder(
+    column: $table.weekEndDate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get compositeScore => $composableBuilder(
+    column: $table.compositeScore,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get summaryJson => $composableBuilder(
+    column: $table.summaryJson,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get reflectionNotes => $composableBuilder(
+    column: $table.reflectionNotes,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isSynced => $composableBuilder(
+    column: $table.isSynced,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$WeeklyReviewsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $WeeklyReviewsTable> {
+  $$WeeklyReviewsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get userId =>
+      $composableBuilder(column: $table.userId, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get weekStartDate => $composableBuilder(
+    column: $table.weekStartDate,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get weekEndDate => $composableBuilder(
+    column: $table.weekEndDate,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get compositeScore => $composableBuilder(
+    column: $table.compositeScore,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get summaryJson => $composableBuilder(
+    column: $table.summaryJson,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get reflectionNotes => $composableBuilder(
+    column: $table.reflectionNotes,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<bool> get isSynced =>
+      $composableBuilder(column: $table.isSynced, builder: (column) => column);
+}
+
+class $$WeeklyReviewsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $WeeklyReviewsTable,
+          WeeklyReview,
+          $$WeeklyReviewsTableFilterComposer,
+          $$WeeklyReviewsTableOrderingComposer,
+          $$WeeklyReviewsTableAnnotationComposer,
+          $$WeeklyReviewsTableCreateCompanionBuilder,
+          $$WeeklyReviewsTableUpdateCompanionBuilder,
+          (
+            WeeklyReview,
+            BaseReferences<_$AppDatabase, $WeeklyReviewsTable, WeeklyReview>,
+          ),
+          WeeklyReview,
+          PrefetchHooks Function()
+        > {
+  $$WeeklyReviewsTableTableManager(_$AppDatabase db, $WeeklyReviewsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$WeeklyReviewsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$WeeklyReviewsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$WeeklyReviewsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String?> userId = const Value.absent(),
+                Value<DateTime> weekStartDate = const Value.absent(),
+                Value<DateTime> weekEndDate = const Value.absent(),
+                Value<int> compositeScore = const Value.absent(),
+                Value<String> summaryJson = const Value.absent(),
+                Value<String?> reflectionNotes = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<bool> isSynced = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => WeeklyReviewsCompanion(
+                id: id,
+                userId: userId,
+                weekStartDate: weekStartDate,
+                weekEndDate: weekEndDate,
+                compositeScore: compositeScore,
+                summaryJson: summaryJson,
+                reflectionNotes: reflectionNotes,
+                createdAt: createdAt,
+                isSynced: isSynced,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                Value<String?> userId = const Value.absent(),
+                required DateTime weekStartDate,
+                required DateTime weekEndDate,
+                required int compositeScore,
+                required String summaryJson,
+                Value<String?> reflectionNotes = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<bool> isSynced = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => WeeklyReviewsCompanion.insert(
+                id: id,
+                userId: userId,
+                weekStartDate: weekStartDate,
+                weekEndDate: weekEndDate,
+                compositeScore: compositeScore,
+                summaryJson: summaryJson,
+                reflectionNotes: reflectionNotes,
+                createdAt: createdAt,
+                isSynced: isSynced,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$WeeklyReviewsTable, WeeklyReview>(table),
+                  BaseReferences<
+                    _$AppDatabase,
+                    $WeeklyReviewsTable,
+                    WeeklyReview
+                  >(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$WeeklyReviewsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $WeeklyReviewsTable,
+      WeeklyReview,
+      $$WeeklyReviewsTableFilterComposer,
+      $$WeeklyReviewsTableOrderingComposer,
+      $$WeeklyReviewsTableAnnotationComposer,
+      $$WeeklyReviewsTableCreateCompanionBuilder,
+      $$WeeklyReviewsTableUpdateCompanionBuilder,
+      (
+        WeeklyReview,
+        BaseReferences<_$AppDatabase, $WeeklyReviewsTable, WeeklyReview>,
+      ),
+      WeeklyReview,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -12737,4 +13621,6 @@ class $AppDatabaseManager {
       $$RoutineCompletionsTableTableManager(_db, _db.routineCompletions);
   $$StudySessionsTableTableManager get studySessions =>
       $$StudySessionsTableTableManager(_db, _db.studySessions);
+  $$WeeklyReviewsTableTableManager get weeklyReviews =>
+      $$WeeklyReviewsTableTableManager(_db, _db.weeklyReviews);
 }

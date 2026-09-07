@@ -25,7 +25,7 @@ Running table of contents and roadmap for the Cadence offline-first personal ope
 | 16 | [Routines & Daily Scheduling Checklist](16.routines-scheduling-checklist.md) | Build daily routines with sortable tasks and completion histories. | `#routines #habits #ui` | Complete |
 | 17 | [Pomodoro & Study Time Tracker](17.pomodoro-study-timer.md) | Implement focused study session timer with tag association (e.g., "Thesis"). | `#timer #pomodoro #study` | Complete |
 | 18 | [Full Time-Blocking Planner](18.full-time-blocking-planner.md) | Integrate interactive calendar planner linking routines, study blocks, and conflict detection. | `#calendar #planner #timeblocking` | Complete |
-| 19 | Cross-Module Aggregation & Weekly Review | Read across expenses, movement, study, and goals to generate automated weekly review summaries. | `#aggregation #analytics #review` | Planned |
+| 19 | [Cross-Module Aggregation & Weekly Review](19.cross-module-aggregation-weekly-review.md) | Read across expenses, movement, study, and goals to generate automated weekly review summaries. | `#aggregation #analytics #review` | Complete |
 | 20 | Net Worth & Balance Tracking | Track historical account balances and visualize net worth trajectory. | `#finance #fl_chart #analytics` | Planned |
 | R4 | Review Chunks 16–20 | Review routines, time-blocking, cross-module joins, and financial graphing. | `#review` | Planned |
 | 21 | Debt & Lending Ledger | Manage debts and IOUs (owed to me vs I owe) with settlement tracking. | `#finance #ledger` | Planned |
