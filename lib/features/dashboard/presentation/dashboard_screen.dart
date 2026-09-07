@@ -16,6 +16,7 @@ import '../../goals/widgets/goals_overview_section.dart';
 import '../../calendar/presentation/planner_view.dart';
 import '../../movement/presentation/movement_view.dart';
 import '../../routines/presentation/routines_view.dart';
+import '../../study/widgets/focus_timer_card.dart';
 
 class DashboardScreen extends ConsumerStatefulWidget {
   const DashboardScreen({super.key});
@@ -565,6 +566,11 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
 
           // Daily Goals & Progress Tracker
           const GoalsOverviewSection(),
+
+          const SizedBox(height: 16),
+
+          // Pomodoro & Deep Focus Study Tracker
+          const FocusTimerCard(),
 
           const SizedBox(height: 16),
 
