@@ -28,7 +28,7 @@ Running table of contents and roadmap for the Cadence offline-first personal ope
 | 19 | [Cross-Module Aggregation & Weekly Review](19.cross-module-aggregation-weekly-review.md) | Read across expenses, movement, study, and goals to generate automated weekly review summaries. | `#aggregation #analytics #review` | Complete |
 | 20 | [Net Worth & Balance Tracking](20.net-worth-balance-tracking.md) | Track historical account balances and visualize net worth trajectory. | `#finance #fl_chart #analytics` | Complete |
 | R4 | [Review Chunks 16–20](R4.review-chunks-16-20.md) | Review routines, time-blocking, cross-module joins, and financial graphing. | `#review` | Complete |
-| 21 | Debt & Lending Ledger | Manage debts and IOUs (owed to me vs I owe) with settlement tracking. | `#finance #ledger` | Planned |
+| 21 | [Debt & Lending Ledger](21.debt-lending-ledger.md) | Manage debts and IOUs (owed to me vs I owe) with settlement tracking. | `#finance #ledger` | Complete |
 | 22 | Android Screen-Time Integration | Query Android `UsageStatsManager` for app usage rollups correlated with daily productivity. | `#android #usage-stats #analytics` | Planned |
 | 23 | Biometric Security & Full JSON Export | Add biometric app lock (`local_auth`) and one-click JSON export for complete data sovereignty. | `#security #biometrics #export #privacy` | Planned |
 | 24 | Unified Home Dashboard & Global Quick-Add | Build centralized daily overview and modular quick-entry modal. | `#dashboard #ui #ux` | Planned |

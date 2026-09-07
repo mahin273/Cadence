@@ -7,6 +7,7 @@ import '../widgets/category_donut_chart.dart';
 import '../widgets/expense_list_tile.dart';
 import '../widgets/month_selector_bar.dart';
 import '../widgets/net_worth_overview_card.dart';
+import '../widgets/debt_overview_card.dart';
 
 /// Complete Finance screen and dashboard tab.
 class FinanceView extends ConsumerWidget {
@@ -30,6 +31,8 @@ class FinanceView extends ConsumerWidget {
                   MonthSelectorBar(),
                   SizedBox(height: 16),
                   NetWorthOverviewCard(),
+                  SizedBox(height: 16),
+                  DebtOverviewCard(),
                   SizedBox(height: 16),
                   BudgetProgressSection(),
                   SizedBox(height: 16),

@@ -10,6 +10,7 @@ import 'tables/routines_table.dart';
 import 'tables/study_sessions_table.dart';
 import 'tables/weekly_reviews_table.dart';
 import 'tables/accounts_table.dart';
+import 'tables/debts_table.dart';
 import 'connection/native_connection.dart';
 import '../../features/finance/models/finance_models.dart';
 
@@ -31,12 +32,14 @@ part 'app_database.g.dart';
   WeeklyReviews,
   Accounts,
   AccountBalances,
+  Debts,
+  DebtPayments,
 ])
 class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? executor]) : super(executor ?? openConnection());
 
   @override
-  int get schemaVersion => 9;
+  int get schemaVersion => 10;
 
   @override
   MigrationStrategy get migration {
@@ -74,6 +77,10 @@ class AppDatabase extends _$AppDatabase {
         if (from < 9) {
           await m.createTable(accounts);
           await m.createTable(accountBalances);
+        }
+        if (from < 10) {
+          await m.createTable(debts);
+          await m.createTable(debtPayments);
         }
       },
       beforeOpen: (details) async {
@@ -894,6 +901,115 @@ class AppDatabase extends _$AppDatabase {
               tbl.recordedAt.isSmallerOrEqualValue(end))
           ..orderBy([(tbl) => OrderingTerm.asc(tbl.recordedAt)]))
         .get();
+  }
+
+  // -------------------------------------------------------------
+  // Debts & Lending Operations (Chunk 21)
+  // -------------------------------------------------------------
+
+  /// Upsert a debt record (lent to others or borrowed from others).
+  Future<void> upsertDebt(DebtsCompanion companion) async {
+    await into(debts).insertOnConflictUpdate(companion);
+  }
+
+  /// Delete a debt record and its cascade payments.
+  Future<void> deleteDebt(String id) async {
+    await (delete(debts)..where((tbl) => tbl.id.equals(id))).go();
+  }
+
+  /// Watch all debts ordered by settlement status, creation date, and rowId.
+  Stream<List<Debt>> watchAllDebts() {
+    return (select(debts)
+          ..orderBy([
+            (tbl) => OrderingTerm.asc(tbl.isSettled),
+            (tbl) => OrderingTerm.desc(tbl.createdAt),
+            (tbl) => OrderingTerm.desc(tbl.rowId),
+          ]))
+        .watch();
+  }
+
+  /// Watch active (unsettled) debts.
+  Stream<List<Debt>> watchActiveDebts() {
+    return (select(debts)
+          ..where((tbl) => tbl.isSettled.equals(false))
+          ..orderBy([
+            (tbl) => OrderingTerm.desc(tbl.createdAt),
+            (tbl) => OrderingTerm.desc(tbl.rowId),
+          ]))
+        .watch();
+  }
+
+  /// Fetch all active debts once.
+  Future<List<Debt>> getActiveDebts() {
+    return (select(debts)
+          ..where((tbl) => tbl.isSettled.equals(false))
+          ..orderBy([
+            (tbl) => OrderingTerm.desc(tbl.createdAt),
+            (tbl) => OrderingTerm.desc(tbl.rowId),
+          ]))
+        .get();
+  }
+
+  /// Fetch single debt by ID.
+  Future<Debt?> getDebtById(String id) {
+    return (select(debts)..where((tbl) => tbl.id.equals(id))).getSingleOrNull();
+  }
+
+  /// Watch payment history for a specific debt.
+  Stream<List<DebtPayment>> watchPaymentsForDebt(String debtId) {
+    return (select(debtPayments)
+          ..where((tbl) => tbl.debtId.equals(debtId))
+          ..orderBy([
+            (tbl) => OrderingTerm.desc(tbl.paidAt),
+            (tbl) => OrderingTerm.desc(tbl.createdAt),
+            (tbl) => OrderingTerm.desc(tbl.rowId),
+          ]))
+        .watch();
+  }
+
+  /// Fetch payments for a specific debt once.
+  Future<List<DebtPayment>> getPaymentsForDebt(String debtId) {
+    return (select(debtPayments)
+          ..where((tbl) => tbl.debtId.equals(debtId))
+          ..orderBy([
+            (tbl) => OrderingTerm.desc(tbl.paidAt),
+            (tbl) => OrderingTerm.desc(tbl.createdAt),
+            (tbl) => OrderingTerm.desc(tbl.rowId),
+          ]))
+        .get();
+  }
+
+  /// Record a payment against a debt atomically inside an ACID transaction.
+  Future<void> recordDebtPayment({
+    required DebtPaymentsCompanion payment,
+    required double paymentAmount,
+  }) async {
+    await transaction(() async {
+      await into(debtPayments).insert(payment);
+      final currentDebt = await getDebtById(payment.debtId.value);
+      if (currentDebt != null) {
+        final newRemaining = (currentDebt.remainingAmount - paymentAmount).clamp(0.0, double.infinity);
+        final isSettled = newRemaining <= 0.001;
+        await (update(debts)..where((tbl) => tbl.id.equals(currentDebt.id))).write(
+          DebtsCompanion(
+            remainingAmount: Value(newRemaining),
+            isSettled: Value(isSettled),
+            updatedAt: Value(DateTime.now()),
+          ),
+        );
+      }
+    });
+  }
+
+  /// Toggle or update debt settlement status directly.
+  Future<void> updateDebtSettlementStatus(String debtId, bool isSettled) async {
+    await (update(debts)..where((tbl) => tbl.id.equals(debtId))).write(
+      DebtsCompanion(
+        isSettled: Value(isSettled),
+        remainingAmount: isSettled ? const Value(0.0) : const Value.absent(),
+        updatedAt: Value(DateTime.now()),
+      ),
+    );
   }
 }
 
