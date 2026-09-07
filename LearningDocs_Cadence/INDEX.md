@@ -19,7 +19,7 @@ Running table of contents and roadmap for the Cadence offline-first personal ope
 | 11 | [Step Counter Integration](11.step-counter-integration.md) | Connect native pedometer hardware sensor to log daily steps locally as a reliable fallback. | `#sensors #pedometer #background` | Complete |
 | 12 | [Background Foreground Service](12.background-foreground-service.md) | Configure persistent Android foreground service to prevent OS process termination during tracking. | `#android #background #foreground-service` | Complete |
 | 13 | [GPS Route Recording & Drift Buffering](13.gps-route-recording-drift-buffering.md) | Stream location updates, buffer coordinate points locally, and compute distance/pace. | `#geolocator #gps #battery #drift` | Complete |
-| 14 | Route Map Visualization | Render recorded GPS tracks on an interactive OpenStreetMap view using `flutter_map`. | `#maps #flutter_map #gis` | Planned |
+| 14 | [Route Map Visualization](14.route-map-visualization.md) | Render recorded GPS tracks on an interactive OpenStreetMap view using `flutter_map`. | `#maps #flutter_map #gis` | Complete |
 | 15 | PostGIS Route Sync to Supabase | Transform local route paths into PostGIS LineString geometry and sync on route completion. | `#postgis #supabase #geo #sync` | Planned |
 | R3 | Review Chunks 11–15 | Review sensor streaming, Android lifecycle/foreground service, and GIS geometry. | `#review` | Planned |
 | 16 | Routines & Daily Scheduling Checklist | Build daily routines with sortable tasks and completion histories. | `#routines #habits #ui` | Planned |

@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import '../../../core/database/database_provider.dart';
 import '../models/route_models.dart';
 import '../providers/route_recording_provider.dart';
+import 'route_detail_sheet.dart';
 
 /// Renders historical completed GPS routes.
 class RecentRoutesList extends ConsumerWidget {
@@ -138,6 +139,14 @@ class RecentRoutesList extends ConsumerWidget {
                       ),
                     ),
                     child: ListTile(
+                      onTap: () {
+                        showModalBottomSheet(
+                          context: context,
+                          isScrollControlled: true,
+                          backgroundColor: Colors.transparent,
+                          builder: (_) => RouteDetailSheet(route: route),
+                        );
+                      },
                       contentPadding: const EdgeInsets.symmetric(
                         horizontal: 16.0,
                         vertical: 8.0,
