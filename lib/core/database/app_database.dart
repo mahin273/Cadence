@@ -6,6 +6,7 @@ import 'tables/budgets_table.dart';
 import 'tables/goals_table.dart';
 import 'tables/calendar_events_table.dart';
 import 'tables/routes_table.dart';
+import 'tables/routines_table.dart';
 import 'connection/native_connection.dart';
 import '../../features/finance/models/finance_models.dart';
 
@@ -20,12 +21,15 @@ part 'app_database.g.dart';
   CalendarEvents,
   Routes,
   RoutePoints,
+  Routines,
+  RoutineItems,
+  RoutineCompletions,
 ])
 class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? executor]) : super(executor ?? openConnection());
 
   @override
-  int get schemaVersion => 5;
+  int get schemaVersion => 6;
 
   @override
   MigrationStrategy get migration {
@@ -48,6 +52,11 @@ class AppDatabase extends _$AppDatabase {
         if (from < 5) {
           await m.createTable(routes);
           await m.createTable(routePoints);
+        }
+        if (from < 6) {
+          await m.createTable(routines);
+          await m.createTable(routineItems);
+          await m.createTable(routineCompletions);
         }
       },
       beforeOpen: (details) async {
@@ -572,6 +581,134 @@ class AppDatabase extends _$AppDatabase {
     await transaction(() async {
       await (delete(routePoints)..where((tbl) => tbl.routeId.equals(id))).go();
       await (delete(routes)..where((tbl) => tbl.id.equals(id))).go();
+    });
+  }
+
+  // -------------------------------------------------------------
+  // Routines & Daily Scheduling Checklist Operations
+  // -------------------------------------------------------------
+
+  /// Insert a new routine.
+  Future<void> createRoutine(RoutinesCompanion routine) async {
+    await into(routines).insert(routine);
+  }
+
+  /// Insert a single routine checklist item.
+  Future<void> createRoutineItem(RoutineItemsCompanion item) async {
+    await into(routineItems).insert(item);
+  }
+
+  /// Insert a routine along with all its initial checklist items atomically.
+  Future<void> createRoutineWithItems(
+    RoutinesCompanion routine,
+    List<RoutineItemsCompanion> items,
+  ) async {
+    await transaction(() async {
+      await into(routines).insert(routine);
+      if (items.isNotEmpty) {
+        await batch((b) {
+          b.insertAll(routineItems, items);
+        });
+      }
+    });
+  }
+
+  /// Watch active routines ordered by sortOrder.
+  Stream<List<Routine>> watchActiveRoutines() {
+    return (select(routines)
+          ..where((tbl) => tbl.isActive.equals(true))
+          ..orderBy([(tbl) => OrderingTerm.asc(tbl.sortOrder)]))
+        .watch();
+  }
+
+  /// Watch checklist items for a specific routine ordered by sortOrder.
+  Stream<List<RoutineItem>> watchItemsForRoutine(String routineId) {
+    return (select(routineItems)
+          ..where((tbl) => tbl.routineId.equals(routineId))
+          ..orderBy([(tbl) => OrderingTerm.asc(tbl.sortOrder)]))
+        .watch();
+  }
+
+  /// Fetch checklist items for a specific routine ordered by sortOrder.
+  Future<List<RoutineItem>> getItemsForRoutine(String routineId) {
+    return (select(routineItems)
+          ..where((tbl) => tbl.routineId.equals(routineId))
+          ..orderBy([(tbl) => OrderingTerm.asc(tbl.sortOrder)]))
+        .get();
+  }
+
+  /// Watch item completions for a specific date string ('YYYY-MM-DD').
+  Stream<List<RoutineCompletion>> watchCompletionsForDate(String dateStr) {
+    return (select(routineCompletions)
+          ..where((tbl) => tbl.completedDate.equals(dateStr)))
+        .watch();
+  }
+
+  /// Get item completions for a specific date string ('YYYY-MM-DD').
+  Future<List<RoutineCompletion>> getCompletionsForDate(String dateStr) {
+    return (select(routineCompletions)
+          ..where((tbl) => tbl.completedDate.equals(dateStr)))
+        .get();
+  }
+
+  /// Toggle checklist item completion for a given calendar date.
+  Future<bool> toggleRoutineItemCompletion(
+    String routineId,
+    String itemId,
+    String dateStr,
+  ) async {
+    return await transaction(() async {
+      final existing = await (select(routineCompletions)
+            ..where((tbl) =>
+                tbl.itemId.equals(itemId) & tbl.completedDate.equals(dateStr)))
+          .getSingleOrNull();
+
+      if (existing != null) {
+        // Uncheck
+        await (delete(routineCompletions)..where((tbl) => tbl.id.equals(existing.id))).go();
+        return false;
+      } else {
+        // Check
+        await into(routineCompletions).insert(
+          RoutineCompletionsCompanion.insert(
+            routineId: routineId,
+            itemId: itemId,
+            completedDate: dateStr,
+            completedAt: Value(DateTime.now()),
+          ),
+        );
+        return true;
+      }
+    });
+  }
+
+  /// Reorder items within a routine atomically.
+  Future<void> reorderRoutineItems(List<String> itemIdsInOrder) async {
+    await transaction(() async {
+      for (int i = 0; i < itemIdsInOrder.length; i++) {
+        await (update(routineItems)..where((tbl) => tbl.id.equals(itemIdsInOrder[i]))).write(
+          RoutineItemsCompanion(
+            sortOrder: Value(i),
+          ),
+        );
+      }
+    });
+  }
+
+  /// Delete a routine session and cascade delete items and completions.
+  Future<void> deleteRoutine(String id) async {
+    await transaction(() async {
+      await (delete(routineCompletions)..where((tbl) => tbl.routineId.equals(id))).go();
+      await (delete(routineItems)..where((tbl) => tbl.routineId.equals(id))).go();
+      await (delete(routines)..where((tbl) => tbl.id.equals(id))).go();
+    });
+  }
+
+  /// Delete a single routine item.
+  Future<void> deleteRoutineItem(String itemId) async {
+    await transaction(() async {
+      await (delete(routineCompletions)..where((tbl) => tbl.itemId.equals(itemId))).go();
+      await (delete(routineItems)..where((tbl) => tbl.id.equals(itemId))).go();
     });
   }
 }

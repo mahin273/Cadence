@@ -15,6 +15,7 @@ import '../../finance/presentation/finance_view.dart';
 import '../../goals/widgets/goals_overview_section.dart';
 import '../../calendar/presentation/planner_view.dart';
 import '../../movement/presentation/movement_view.dart';
+import '../../routines/presentation/routines_view.dart';
 
 class DashboardScreen extends ConsumerStatefulWidget {
   const DashboardScreen({super.key});
@@ -137,6 +138,11 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
             label: 'Today',
           ),
           NavigationDestination(
+            icon: Icon(Icons.checklist_rtl_outlined),
+            selectedIcon: Icon(Icons.checklist_rtl_rounded),
+            label: 'Routines',
+          ),
+          NavigationDestination(
             icon: Icon(Icons.directions_run_outlined),
             selectedIcon: Icon(Icons.directions_run_rounded),
             label: 'Movement',
@@ -167,11 +173,13 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     ThemeSettings themeSettings,
   ) {
     switch (_selectedTabIndex) {
-      case 2:
-        return const FinanceView();
       case 1:
+        return const RoutinesView();
+      case 2:
         return const MovementView();
       case 3:
+        return const FinanceView();
+      case 4:
         return const PlannerView();
       case 0:
       default:
