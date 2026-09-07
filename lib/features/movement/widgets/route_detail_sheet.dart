@@ -6,6 +6,7 @@ import '../../../core/database/app_database.dart';
 import '../../../core/database/database_provider.dart';
 import '../models/route_models.dart';
 import '../providers/route_recording_provider.dart';
+import '../services/route_sync_service.dart';
 import 'route_map_view.dart';
 
 /// Modal bottom sheet presenting a comprehensive interactive map and telemetry review.
@@ -239,6 +240,29 @@ class RouteDetailSheet extends ConsumerWidget {
               ],
             ),
           ),
+          if (!route.isSynced) ...[
+            const SizedBox(height: 16),
+            SizedBox(
+              width: double.infinity,
+              child: FilledButton.tonalIcon(
+                icon: const Icon(Icons.cloud_upload_outlined),
+                label: const Text('Sync to Supabase Cloud'),
+                onPressed: () async {
+                  final status = await ref
+                      .read(routeSyncServiceProvider)
+                      .syncRoute(route.id);
+                  if (context.mounted) {
+                    final message = status == RouteSyncStatus.success
+                        ? 'Route synced to Supabase!'
+                        : 'Sync queued (Device offline or not authenticated)';
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text(message)),
+                    );
+                  }
+                },
+              ),
+            ),
+          ],
         ],
       ),
     );
