@@ -5,17 +5,27 @@ import 'tables/expenses_table.dart';
 import 'tables/budgets_table.dart';
 import 'tables/goals_table.dart';
 import 'tables/calendar_events_table.dart';
+import 'tables/routes_table.dart';
 import 'connection/native_connection.dart';
 import '../../features/finance/models/finance_models.dart';
 
 part 'app_database.g.dart';
 
-@DriftDatabase(tables: [Entries, Expenses, Budgets, Goals, GoalRecords, CalendarEvents])
+@DriftDatabase(tables: [
+  Entries,
+  Expenses,
+  Budgets,
+  Goals,
+  GoalRecords,
+  CalendarEvents,
+  Routes,
+  RoutePoints,
+])
 class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? executor]) : super(executor ?? openConnection());
 
   @override
-  int get schemaVersion => 4;
+  int get schemaVersion => 5;
 
   @override
   MigrationStrategy get migration {
@@ -35,6 +45,13 @@ class AppDatabase extends _$AppDatabase {
         if (from < 4) {
           await m.createTable(calendarEvents);
         }
+        if (from < 5) {
+          await m.createTable(routes);
+          await m.createTable(routePoints);
+        }
+      },
+      beforeOpen: (details) async {
+        await customStatement('PRAGMA foreign_keys = ON;');
       },
     );
   }
@@ -499,6 +516,63 @@ class AppDatabase extends _$AppDatabase {
         updatedAt: Value(DateTime.now().toUtc()),
       ),
     );
+  }
+
+  // -------------------------------------------------------------
+  // Routes & GPS Breadcrumbs Operations
+  // -------------------------------------------------------------
+
+  /// Insert a new route session.
+  Future<void> createRoute(RoutesCompanion companion) async {
+    await into(routes).insert(companion);
+  }
+
+  /// Update an existing route session (e.g. status, distance, pace, duration).
+  Future<void> updateRoute(String id, RoutesCompanion companion) async {
+    await (update(routes)..where((tbl) => tbl.id.equals(id))).write(companion);
+  }
+
+  /// Fetch a single route session by UUID.
+  Future<Route?> getRouteById(String id) {
+    return (select(routes)..where((tbl) => tbl.id.equals(id))).getSingleOrNull();
+  }
+
+  /// Watch a single route session by UUID.
+  Stream<Route?> watchRouteById(String id) {
+    return (select(routes)..where((tbl) => tbl.id.equals(id))).watchSingleOrNull();
+  }
+
+  /// Watch completed routes ordered by recency.
+  Stream<List<Route>> watchCompletedRoutes({int limit = 20}) {
+    return (select(routes)
+          ..where((tbl) => tbl.status.equals('completed'))
+          ..orderBy([(tbl) => OrderingTerm.desc(tbl.startTime)])
+          ..limit(limit))
+        .watch();
+  }
+
+  /// Batch insert GPS route breadcrumb points atomically.
+  Future<void> insertRoutePointsBatch(List<RoutePointsCompanion> points) async {
+    if (points.isEmpty) return;
+    await batch((b) {
+      b.insertAll(routePoints, points);
+    });
+  }
+
+  /// Fetch all recorded points for a specific route ordered sequentially.
+  Future<List<RoutePoint>> getPointsForRoute(String routeId) {
+    return (select(routePoints)
+          ..where((tbl) => tbl.routeId.equals(routeId))
+          ..orderBy([(tbl) => OrderingTerm.asc(tbl.pointIndex)]))
+        .get();
+  }
+
+  /// Delete a route session (will cascade delete points).
+  Future<void> deleteRoute(String id) async {
+    await transaction(() async {
+      await (delete(routePoints)..where((tbl) => tbl.routeId.equals(id))).go();
+      await (delete(routes)..where((tbl) => tbl.id.equals(id))).go();
+    });
   }
 }
 

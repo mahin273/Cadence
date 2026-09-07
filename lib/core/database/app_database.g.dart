@@ -4342,6 +4342,1317 @@ class CalendarEventsCompanion extends UpdateCompanion<CalendarEvent> {
   }
 }
 
+class $RoutesTable extends Routes with TableInfo<$RoutesTable, Route> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $RoutesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _titleMeta = const VerificationMeta('title');
+  @override
+  late final GeneratedColumn<String> title = GeneratedColumn<String>(
+    'title',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('Outdoor Activity'),
+  );
+  static const VerificationMeta _activityTypeMeta = const VerificationMeta(
+    'activityType',
+  );
+  @override
+  late final GeneratedColumn<String> activityType = GeneratedColumn<String>(
+    'activity_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('walk'),
+  );
+  static const VerificationMeta _statusMeta = const VerificationMeta('status');
+  @override
+  late final GeneratedColumn<String> status = GeneratedColumn<String>(
+    'status',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('recording'),
+  );
+  static const VerificationMeta _startTimeMeta = const VerificationMeta(
+    'startTime',
+  );
+  @override
+  late final GeneratedColumn<DateTime> startTime = GeneratedColumn<DateTime>(
+    'start_time',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _endTimeMeta = const VerificationMeta(
+    'endTime',
+  );
+  @override
+  late final GeneratedColumn<DateTime> endTime = GeneratedColumn<DateTime>(
+    'end_time',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _totalDistanceMetersMeta =
+      const VerificationMeta('totalDistanceMeters');
+  @override
+  late final GeneratedColumn<double> totalDistanceMeters =
+      GeneratedColumn<double>(
+        'total_distance_meters',
+        aliasedName,
+        false,
+        type: DriftSqlType.double,
+        requiredDuringInsert: false,
+        defaultValue: const Constant(0.0),
+      );
+  static const VerificationMeta _durationSecondsMeta = const VerificationMeta(
+    'durationSeconds',
+  );
+  @override
+  late final GeneratedColumn<int> durationSeconds = GeneratedColumn<int>(
+    'duration_seconds',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _avgPaceSecondsPerKmMeta =
+      const VerificationMeta('avgPaceSecondsPerKm');
+  @override
+  late final GeneratedColumn<double> avgPaceSecondsPerKm =
+      GeneratedColumn<double>(
+        'avg_pace_seconds_per_km',
+        aliasedName,
+        false,
+        type: DriftSqlType.double,
+        requiredDuringInsert: false,
+        defaultValue: const Constant(0.0),
+      );
+  static const VerificationMeta _isSyncedMeta = const VerificationMeta(
+    'isSynced',
+  );
+  @override
+  late final GeneratedColumn<bool> isSynced = GeneratedColumn<bool>(
+    'is_synced',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_synced" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    clientDefault: () => DateTime.now(),
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    clientDefault: () => DateTime.now(),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    title,
+    activityType,
+    status,
+    startTime,
+    endTime,
+    totalDistanceMeters,
+    durationSeconds,
+    avgPaceSecondsPerKm,
+    isSynced,
+    createdAt,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'routes';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<Route> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('title')) {
+      context.handle(
+        _titleMeta,
+        title.isAcceptableOrUnknown(data['title']!, _titleMeta),
+      );
+    }
+    if (data.containsKey('activity_type')) {
+      context.handle(
+        _activityTypeMeta,
+        activityType.isAcceptableOrUnknown(
+          data['activity_type']!,
+          _activityTypeMeta,
+        ),
+      );
+    }
+    if (data.containsKey('status')) {
+      context.handle(
+        _statusMeta,
+        status.isAcceptableOrUnknown(data['status']!, _statusMeta),
+      );
+    }
+    if (data.containsKey('start_time')) {
+      context.handle(
+        _startTimeMeta,
+        startTime.isAcceptableOrUnknown(data['start_time']!, _startTimeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_startTimeMeta);
+    }
+    if (data.containsKey('end_time')) {
+      context.handle(
+        _endTimeMeta,
+        endTime.isAcceptableOrUnknown(data['end_time']!, _endTimeMeta),
+      );
+    }
+    if (data.containsKey('total_distance_meters')) {
+      context.handle(
+        _totalDistanceMetersMeta,
+        totalDistanceMeters.isAcceptableOrUnknown(
+          data['total_distance_meters']!,
+          _totalDistanceMetersMeta,
+        ),
+      );
+    }
+    if (data.containsKey('duration_seconds')) {
+      context.handle(
+        _durationSecondsMeta,
+        durationSeconds.isAcceptableOrUnknown(
+          data['duration_seconds']!,
+          _durationSecondsMeta,
+        ),
+      );
+    }
+    if (data.containsKey('avg_pace_seconds_per_km')) {
+      context.handle(
+        _avgPaceSecondsPerKmMeta,
+        avgPaceSecondsPerKm.isAcceptableOrUnknown(
+          data['avg_pace_seconds_per_km']!,
+          _avgPaceSecondsPerKmMeta,
+        ),
+      );
+    }
+    if (data.containsKey('is_synced')) {
+      context.handle(
+        _isSyncedMeta,
+        isSynced.isAcceptableOrUnknown(data['is_synced']!, _isSyncedMeta),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  Route map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return Route(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      title: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}title'],
+      )!,
+      activityType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}activity_type'],
+      )!,
+      status: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}status'],
+      )!,
+      startTime: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}start_time'],
+      )!,
+      endTime: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}end_time'],
+      ),
+      totalDistanceMeters: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}total_distance_meters'],
+      )!,
+      durationSeconds: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}duration_seconds'],
+      )!,
+      avgPaceSecondsPerKm: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}avg_pace_seconds_per_km'],
+      )!,
+      isSynced: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_synced'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $RoutesTable createAlias(String alias) {
+    return $RoutesTable(attachedDatabase, alias);
+  }
+}
+
+class Route extends DataClass implements Insertable<Route> {
+  /// Unique route identifier (UUID v4).
+  final String id;
+
+  /// User-visible title (e.g. "Morning Run", "Neighborhood Walk").
+  final String title;
+
+  /// Activity type: 'walk', 'run', 'cycle'.
+  final String activityType;
+
+  /// Session status: 'recording', 'paused', 'completed', 'cancelled'.
+  final String status;
+
+  /// Session start timestamp.
+  final DateTime startTime;
+
+  /// Session completion timestamp (null while in progress).
+  final DateTime? endTime;
+
+  /// Total cumulative distance traversed in meters.
+  final double totalDistanceMeters;
+
+  /// Total moving duration in seconds.
+  final int durationSeconds;
+
+  /// Average pace in seconds per kilometer.
+  final double avgPaceSecondsPerKm;
+
+  /// Sync flag for future remote synchronization (Chunk 15 PostGIS).
+  final bool isSynced;
+
+  /// Record creation timestamp.
+  final DateTime createdAt;
+
+  /// Record last-modified timestamp.
+  final DateTime updatedAt;
+  const Route({
+    required this.id,
+    required this.title,
+    required this.activityType,
+    required this.status,
+    required this.startTime,
+    this.endTime,
+    required this.totalDistanceMeters,
+    required this.durationSeconds,
+    required this.avgPaceSecondsPerKm,
+    required this.isSynced,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['title'] = Variable<String>(title);
+    map['activity_type'] = Variable<String>(activityType);
+    map['status'] = Variable<String>(status);
+    map['start_time'] = Variable<DateTime>(startTime);
+    if (!nullToAbsent || endTime != null) {
+      map['end_time'] = Variable<DateTime>(endTime);
+    }
+    map['total_distance_meters'] = Variable<double>(totalDistanceMeters);
+    map['duration_seconds'] = Variable<int>(durationSeconds);
+    map['avg_pace_seconds_per_km'] = Variable<double>(avgPaceSecondsPerKm);
+    map['is_synced'] = Variable<bool>(isSynced);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  RoutesCompanion toCompanion(bool nullToAbsent) {
+    return RoutesCompanion(
+      id: Value(id),
+      title: Value(title),
+      activityType: Value(activityType),
+      status: Value(status),
+      startTime: Value(startTime),
+      endTime: endTime == null && nullToAbsent
+          ? const Value.absent()
+          : Value(endTime),
+      totalDistanceMeters: Value(totalDistanceMeters),
+      durationSeconds: Value(durationSeconds),
+      avgPaceSecondsPerKm: Value(avgPaceSecondsPerKm),
+      isSynced: Value(isSynced),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory Route.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return Route(
+      id: serializer.fromJson<String>(json['id']),
+      title: serializer.fromJson<String>(json['title']),
+      activityType: serializer.fromJson<String>(json['activityType']),
+      status: serializer.fromJson<String>(json['status']),
+      startTime: serializer.fromJson<DateTime>(json['startTime']),
+      endTime: serializer.fromJson<DateTime?>(json['endTime']),
+      totalDistanceMeters: serializer.fromJson<double>(
+        json['totalDistanceMeters'],
+      ),
+      durationSeconds: serializer.fromJson<int>(json['durationSeconds']),
+      avgPaceSecondsPerKm: serializer.fromJson<double>(
+        json['avgPaceSecondsPerKm'],
+      ),
+      isSynced: serializer.fromJson<bool>(json['isSynced']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'title': serializer.toJson<String>(title),
+      'activityType': serializer.toJson<String>(activityType),
+      'status': serializer.toJson<String>(status),
+      'startTime': serializer.toJson<DateTime>(startTime),
+      'endTime': serializer.toJson<DateTime?>(endTime),
+      'totalDistanceMeters': serializer.toJson<double>(totalDistanceMeters),
+      'durationSeconds': serializer.toJson<int>(durationSeconds),
+      'avgPaceSecondsPerKm': serializer.toJson<double>(avgPaceSecondsPerKm),
+      'isSynced': serializer.toJson<bool>(isSynced),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  Route copyWith({
+    String? id,
+    String? title,
+    String? activityType,
+    String? status,
+    DateTime? startTime,
+    Value<DateTime?> endTime = const Value.absent(),
+    double? totalDistanceMeters,
+    int? durationSeconds,
+    double? avgPaceSecondsPerKm,
+    bool? isSynced,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) => Route(
+    id: id ?? this.id,
+    title: title ?? this.title,
+    activityType: activityType ?? this.activityType,
+    status: status ?? this.status,
+    startTime: startTime ?? this.startTime,
+    endTime: endTime.present ? endTime.value : this.endTime,
+    totalDistanceMeters: totalDistanceMeters ?? this.totalDistanceMeters,
+    durationSeconds: durationSeconds ?? this.durationSeconds,
+    avgPaceSecondsPerKm: avgPaceSecondsPerKm ?? this.avgPaceSecondsPerKm,
+    isSynced: isSynced ?? this.isSynced,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  Route copyWithCompanion(RoutesCompanion data) {
+    return Route(
+      id: data.id.present ? data.id.value : this.id,
+      title: data.title.present ? data.title.value : this.title,
+      activityType: data.activityType.present
+          ? data.activityType.value
+          : this.activityType,
+      status: data.status.present ? data.status.value : this.status,
+      startTime: data.startTime.present ? data.startTime.value : this.startTime,
+      endTime: data.endTime.present ? data.endTime.value : this.endTime,
+      totalDistanceMeters: data.totalDistanceMeters.present
+          ? data.totalDistanceMeters.value
+          : this.totalDistanceMeters,
+      durationSeconds: data.durationSeconds.present
+          ? data.durationSeconds.value
+          : this.durationSeconds,
+      avgPaceSecondsPerKm: data.avgPaceSecondsPerKm.present
+          ? data.avgPaceSecondsPerKm.value
+          : this.avgPaceSecondsPerKm,
+      isSynced: data.isSynced.present ? data.isSynced.value : this.isSynced,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('Route(')
+          ..write('id: $id, ')
+          ..write('title: $title, ')
+          ..write('activityType: $activityType, ')
+          ..write('status: $status, ')
+          ..write('startTime: $startTime, ')
+          ..write('endTime: $endTime, ')
+          ..write('totalDistanceMeters: $totalDistanceMeters, ')
+          ..write('durationSeconds: $durationSeconds, ')
+          ..write('avgPaceSecondsPerKm: $avgPaceSecondsPerKm, ')
+          ..write('isSynced: $isSynced, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    title,
+    activityType,
+    status,
+    startTime,
+    endTime,
+    totalDistanceMeters,
+    durationSeconds,
+    avgPaceSecondsPerKm,
+    isSynced,
+    createdAt,
+    updatedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is Route &&
+          other.id == this.id &&
+          other.title == this.title &&
+          other.activityType == this.activityType &&
+          other.status == this.status &&
+          other.startTime == this.startTime &&
+          other.endTime == this.endTime &&
+          other.totalDistanceMeters == this.totalDistanceMeters &&
+          other.durationSeconds == this.durationSeconds &&
+          other.avgPaceSecondsPerKm == this.avgPaceSecondsPerKm &&
+          other.isSynced == this.isSynced &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class RoutesCompanion extends UpdateCompanion<Route> {
+  final Value<String> id;
+  final Value<String> title;
+  final Value<String> activityType;
+  final Value<String> status;
+  final Value<DateTime> startTime;
+  final Value<DateTime?> endTime;
+  final Value<double> totalDistanceMeters;
+  final Value<int> durationSeconds;
+  final Value<double> avgPaceSecondsPerKm;
+  final Value<bool> isSynced;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<int> rowid;
+  const RoutesCompanion({
+    this.id = const Value.absent(),
+    this.title = const Value.absent(),
+    this.activityType = const Value.absent(),
+    this.status = const Value.absent(),
+    this.startTime = const Value.absent(),
+    this.endTime = const Value.absent(),
+    this.totalDistanceMeters = const Value.absent(),
+    this.durationSeconds = const Value.absent(),
+    this.avgPaceSecondsPerKm = const Value.absent(),
+    this.isSynced = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  RoutesCompanion.insert({
+    required String id,
+    this.title = const Value.absent(),
+    this.activityType = const Value.absent(),
+    this.status = const Value.absent(),
+    required DateTime startTime,
+    this.endTime = const Value.absent(),
+    this.totalDistanceMeters = const Value.absent(),
+    this.durationSeconds = const Value.absent(),
+    this.avgPaceSecondsPerKm = const Value.absent(),
+    this.isSynced = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       startTime = Value(startTime);
+  static Insertable<Route> custom({
+    Expression<String>? id,
+    Expression<String>? title,
+    Expression<String>? activityType,
+    Expression<String>? status,
+    Expression<DateTime>? startTime,
+    Expression<DateTime>? endTime,
+    Expression<double>? totalDistanceMeters,
+    Expression<int>? durationSeconds,
+    Expression<double>? avgPaceSecondsPerKm,
+    Expression<bool>? isSynced,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (title != null) 'title': title,
+      if (activityType != null) 'activity_type': activityType,
+      if (status != null) 'status': status,
+      if (startTime != null) 'start_time': startTime,
+      if (endTime != null) 'end_time': endTime,
+      if (totalDistanceMeters != null)
+        'total_distance_meters': totalDistanceMeters,
+      if (durationSeconds != null) 'duration_seconds': durationSeconds,
+      if (avgPaceSecondsPerKm != null)
+        'avg_pace_seconds_per_km': avgPaceSecondsPerKm,
+      if (isSynced != null) 'is_synced': isSynced,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  RoutesCompanion copyWith({
+    Value<String>? id,
+    Value<String>? title,
+    Value<String>? activityType,
+    Value<String>? status,
+    Value<DateTime>? startTime,
+    Value<DateTime?>? endTime,
+    Value<double>? totalDistanceMeters,
+    Value<int>? durationSeconds,
+    Value<double>? avgPaceSecondsPerKm,
+    Value<bool>? isSynced,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+    Value<int>? rowid,
+  }) {
+    return RoutesCompanion(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      activityType: activityType ?? this.activityType,
+      status: status ?? this.status,
+      startTime: startTime ?? this.startTime,
+      endTime: endTime ?? this.endTime,
+      totalDistanceMeters: totalDistanceMeters ?? this.totalDistanceMeters,
+      durationSeconds: durationSeconds ?? this.durationSeconds,
+      avgPaceSecondsPerKm: avgPaceSecondsPerKm ?? this.avgPaceSecondsPerKm,
+      isSynced: isSynced ?? this.isSynced,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (title.present) {
+      map['title'] = Variable<String>(title.value);
+    }
+    if (activityType.present) {
+      map['activity_type'] = Variable<String>(activityType.value);
+    }
+    if (status.present) {
+      map['status'] = Variable<String>(status.value);
+    }
+    if (startTime.present) {
+      map['start_time'] = Variable<DateTime>(startTime.value);
+    }
+    if (endTime.present) {
+      map['end_time'] = Variable<DateTime>(endTime.value);
+    }
+    if (totalDistanceMeters.present) {
+      map['total_distance_meters'] = Variable<double>(
+        totalDistanceMeters.value,
+      );
+    }
+    if (durationSeconds.present) {
+      map['duration_seconds'] = Variable<int>(durationSeconds.value);
+    }
+    if (avgPaceSecondsPerKm.present) {
+      map['avg_pace_seconds_per_km'] = Variable<double>(
+        avgPaceSecondsPerKm.value,
+      );
+    }
+    if (isSynced.present) {
+      map['is_synced'] = Variable<bool>(isSynced.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('RoutesCompanion(')
+          ..write('id: $id, ')
+          ..write('title: $title, ')
+          ..write('activityType: $activityType, ')
+          ..write('status: $status, ')
+          ..write('startTime: $startTime, ')
+          ..write('endTime: $endTime, ')
+          ..write('totalDistanceMeters: $totalDistanceMeters, ')
+          ..write('durationSeconds: $durationSeconds, ')
+          ..write('avgPaceSecondsPerKm: $avgPaceSecondsPerKm, ')
+          ..write('isSynced: $isSynced, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $RoutePointsTable extends RoutePoints
+    with TableInfo<$RoutePointsTable, RoutePoint> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $RoutePointsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _routeIdMeta = const VerificationMeta(
+    'routeId',
+  );
+  @override
+  late final GeneratedColumn<String> routeId = GeneratedColumn<String>(
+    'route_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES routes (id) ON DELETE CASCADE',
+    ),
+  );
+  static const VerificationMeta _latitudeMeta = const VerificationMeta(
+    'latitude',
+  );
+  @override
+  late final GeneratedColumn<double> latitude = GeneratedColumn<double>(
+    'latitude',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _longitudeMeta = const VerificationMeta(
+    'longitude',
+  );
+  @override
+  late final GeneratedColumn<double> longitude = GeneratedColumn<double>(
+    'longitude',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _altitudeMeta = const VerificationMeta(
+    'altitude',
+  );
+  @override
+  late final GeneratedColumn<double> altitude = GeneratedColumn<double>(
+    'altitude',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _speedMeta = const VerificationMeta('speed');
+  @override
+  late final GeneratedColumn<double> speed = GeneratedColumn<double>(
+    'speed',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _accuracyMeta = const VerificationMeta(
+    'accuracy',
+  );
+  @override
+  late final GeneratedColumn<double> accuracy = GeneratedColumn<double>(
+    'accuracy',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _timestampMeta = const VerificationMeta(
+    'timestamp',
+  );
+  @override
+  late final GeneratedColumn<DateTime> timestamp = GeneratedColumn<DateTime>(
+    'timestamp',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _pointIndexMeta = const VerificationMeta(
+    'pointIndex',
+  );
+  @override
+  late final GeneratedColumn<int> pointIndex = GeneratedColumn<int>(
+    'point_index',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    routeId,
+    latitude,
+    longitude,
+    altitude,
+    speed,
+    accuracy,
+    timestamp,
+    pointIndex,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'route_points';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<RoutePoint> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('route_id')) {
+      context.handle(
+        _routeIdMeta,
+        routeId.isAcceptableOrUnknown(data['route_id']!, _routeIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_routeIdMeta);
+    }
+    if (data.containsKey('latitude')) {
+      context.handle(
+        _latitudeMeta,
+        latitude.isAcceptableOrUnknown(data['latitude']!, _latitudeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_latitudeMeta);
+    }
+    if (data.containsKey('longitude')) {
+      context.handle(
+        _longitudeMeta,
+        longitude.isAcceptableOrUnknown(data['longitude']!, _longitudeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_longitudeMeta);
+    }
+    if (data.containsKey('altitude')) {
+      context.handle(
+        _altitudeMeta,
+        altitude.isAcceptableOrUnknown(data['altitude']!, _altitudeMeta),
+      );
+    }
+    if (data.containsKey('speed')) {
+      context.handle(
+        _speedMeta,
+        speed.isAcceptableOrUnknown(data['speed']!, _speedMeta),
+      );
+    }
+    if (data.containsKey('accuracy')) {
+      context.handle(
+        _accuracyMeta,
+        accuracy.isAcceptableOrUnknown(data['accuracy']!, _accuracyMeta),
+      );
+    }
+    if (data.containsKey('timestamp')) {
+      context.handle(
+        _timestampMeta,
+        timestamp.isAcceptableOrUnknown(data['timestamp']!, _timestampMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_timestampMeta);
+    }
+    if (data.containsKey('point_index')) {
+      context.handle(
+        _pointIndexMeta,
+        pointIndex.isAcceptableOrUnknown(data['point_index']!, _pointIndexMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_pointIndexMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  RoutePoint map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return RoutePoint(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      routeId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}route_id'],
+      )!,
+      latitude: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}latitude'],
+      )!,
+      longitude: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}longitude'],
+      )!,
+      altitude: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}altitude'],
+      ),
+      speed: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}speed'],
+      ),
+      accuracy: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}accuracy'],
+      ),
+      timestamp: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}timestamp'],
+      )!,
+      pointIndex: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}point_index'],
+      )!,
+    );
+  }
+
+  @override
+  $RoutePointsTable createAlias(String alias) {
+    return $RoutePointsTable(attachedDatabase, alias);
+  }
+}
+
+class RoutePoint extends DataClass implements Insertable<RoutePoint> {
+  /// Sequential primary key.
+  final int id;
+
+  /// Foreign key referencing the parent Route session.
+  final String routeId;
+
+  /// Latitude in decimal degrees.
+  final double latitude;
+
+  /// Longitude in decimal degrees.
+  final double longitude;
+
+  /// Altitude in meters above sea level (optional).
+  final double? altitude;
+
+  /// Instantaneous speed in meters per second (optional).
+  final double? speed;
+
+  /// Estimated horizontal accuracy radius in meters.
+  final double? accuracy;
+
+  /// Timestamp when the GPS reading was captured.
+  final DateTime timestamp;
+
+  /// Zero-based sequential ordering index within the route.
+  final int pointIndex;
+  const RoutePoint({
+    required this.id,
+    required this.routeId,
+    required this.latitude,
+    required this.longitude,
+    this.altitude,
+    this.speed,
+    this.accuracy,
+    required this.timestamp,
+    required this.pointIndex,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['route_id'] = Variable<String>(routeId);
+    map['latitude'] = Variable<double>(latitude);
+    map['longitude'] = Variable<double>(longitude);
+    if (!nullToAbsent || altitude != null) {
+      map['altitude'] = Variable<double>(altitude);
+    }
+    if (!nullToAbsent || speed != null) {
+      map['speed'] = Variable<double>(speed);
+    }
+    if (!nullToAbsent || accuracy != null) {
+      map['accuracy'] = Variable<double>(accuracy);
+    }
+    map['timestamp'] = Variable<DateTime>(timestamp);
+    map['point_index'] = Variable<int>(pointIndex);
+    return map;
+  }
+
+  RoutePointsCompanion toCompanion(bool nullToAbsent) {
+    return RoutePointsCompanion(
+      id: Value(id),
+      routeId: Value(routeId),
+      latitude: Value(latitude),
+      longitude: Value(longitude),
+      altitude: altitude == null && nullToAbsent
+          ? const Value.absent()
+          : Value(altitude),
+      speed: speed == null && nullToAbsent
+          ? const Value.absent()
+          : Value(speed),
+      accuracy: accuracy == null && nullToAbsent
+          ? const Value.absent()
+          : Value(accuracy),
+      timestamp: Value(timestamp),
+      pointIndex: Value(pointIndex),
+    );
+  }
+
+  factory RoutePoint.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return RoutePoint(
+      id: serializer.fromJson<int>(json['id']),
+      routeId: serializer.fromJson<String>(json['routeId']),
+      latitude: serializer.fromJson<double>(json['latitude']),
+      longitude: serializer.fromJson<double>(json['longitude']),
+      altitude: serializer.fromJson<double?>(json['altitude']),
+      speed: serializer.fromJson<double?>(json['speed']),
+      accuracy: serializer.fromJson<double?>(json['accuracy']),
+      timestamp: serializer.fromJson<DateTime>(json['timestamp']),
+      pointIndex: serializer.fromJson<int>(json['pointIndex']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'routeId': serializer.toJson<String>(routeId),
+      'latitude': serializer.toJson<double>(latitude),
+      'longitude': serializer.toJson<double>(longitude),
+      'altitude': serializer.toJson<double?>(altitude),
+      'speed': serializer.toJson<double?>(speed),
+      'accuracy': serializer.toJson<double?>(accuracy),
+      'timestamp': serializer.toJson<DateTime>(timestamp),
+      'pointIndex': serializer.toJson<int>(pointIndex),
+    };
+  }
+
+  RoutePoint copyWith({
+    int? id,
+    String? routeId,
+    double? latitude,
+    double? longitude,
+    Value<double?> altitude = const Value.absent(),
+    Value<double?> speed = const Value.absent(),
+    Value<double?> accuracy = const Value.absent(),
+    DateTime? timestamp,
+    int? pointIndex,
+  }) => RoutePoint(
+    id: id ?? this.id,
+    routeId: routeId ?? this.routeId,
+    latitude: latitude ?? this.latitude,
+    longitude: longitude ?? this.longitude,
+    altitude: altitude.present ? altitude.value : this.altitude,
+    speed: speed.present ? speed.value : this.speed,
+    accuracy: accuracy.present ? accuracy.value : this.accuracy,
+    timestamp: timestamp ?? this.timestamp,
+    pointIndex: pointIndex ?? this.pointIndex,
+  );
+  RoutePoint copyWithCompanion(RoutePointsCompanion data) {
+    return RoutePoint(
+      id: data.id.present ? data.id.value : this.id,
+      routeId: data.routeId.present ? data.routeId.value : this.routeId,
+      latitude: data.latitude.present ? data.latitude.value : this.latitude,
+      longitude: data.longitude.present ? data.longitude.value : this.longitude,
+      altitude: data.altitude.present ? data.altitude.value : this.altitude,
+      speed: data.speed.present ? data.speed.value : this.speed,
+      accuracy: data.accuracy.present ? data.accuracy.value : this.accuracy,
+      timestamp: data.timestamp.present ? data.timestamp.value : this.timestamp,
+      pointIndex: data.pointIndex.present
+          ? data.pointIndex.value
+          : this.pointIndex,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('RoutePoint(')
+          ..write('id: $id, ')
+          ..write('routeId: $routeId, ')
+          ..write('latitude: $latitude, ')
+          ..write('longitude: $longitude, ')
+          ..write('altitude: $altitude, ')
+          ..write('speed: $speed, ')
+          ..write('accuracy: $accuracy, ')
+          ..write('timestamp: $timestamp, ')
+          ..write('pointIndex: $pointIndex')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    routeId,
+    latitude,
+    longitude,
+    altitude,
+    speed,
+    accuracy,
+    timestamp,
+    pointIndex,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is RoutePoint &&
+          other.id == this.id &&
+          other.routeId == this.routeId &&
+          other.latitude == this.latitude &&
+          other.longitude == this.longitude &&
+          other.altitude == this.altitude &&
+          other.speed == this.speed &&
+          other.accuracy == this.accuracy &&
+          other.timestamp == this.timestamp &&
+          other.pointIndex == this.pointIndex);
+}
+
+class RoutePointsCompanion extends UpdateCompanion<RoutePoint> {
+  final Value<int> id;
+  final Value<String> routeId;
+  final Value<double> latitude;
+  final Value<double> longitude;
+  final Value<double?> altitude;
+  final Value<double?> speed;
+  final Value<double?> accuracy;
+  final Value<DateTime> timestamp;
+  final Value<int> pointIndex;
+  const RoutePointsCompanion({
+    this.id = const Value.absent(),
+    this.routeId = const Value.absent(),
+    this.latitude = const Value.absent(),
+    this.longitude = const Value.absent(),
+    this.altitude = const Value.absent(),
+    this.speed = const Value.absent(),
+    this.accuracy = const Value.absent(),
+    this.timestamp = const Value.absent(),
+    this.pointIndex = const Value.absent(),
+  });
+  RoutePointsCompanion.insert({
+    this.id = const Value.absent(),
+    required String routeId,
+    required double latitude,
+    required double longitude,
+    this.altitude = const Value.absent(),
+    this.speed = const Value.absent(),
+    this.accuracy = const Value.absent(),
+    required DateTime timestamp,
+    required int pointIndex,
+  }) : routeId = Value(routeId),
+       latitude = Value(latitude),
+       longitude = Value(longitude),
+       timestamp = Value(timestamp),
+       pointIndex = Value(pointIndex);
+  static Insertable<RoutePoint> custom({
+    Expression<int>? id,
+    Expression<String>? routeId,
+    Expression<double>? latitude,
+    Expression<double>? longitude,
+    Expression<double>? altitude,
+    Expression<double>? speed,
+    Expression<double>? accuracy,
+    Expression<DateTime>? timestamp,
+    Expression<int>? pointIndex,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (routeId != null) 'route_id': routeId,
+      if (latitude != null) 'latitude': latitude,
+      if (longitude != null) 'longitude': longitude,
+      if (altitude != null) 'altitude': altitude,
+      if (speed != null) 'speed': speed,
+      if (accuracy != null) 'accuracy': accuracy,
+      if (timestamp != null) 'timestamp': timestamp,
+      if (pointIndex != null) 'point_index': pointIndex,
+    });
+  }
+
+  RoutePointsCompanion copyWith({
+    Value<int>? id,
+    Value<String>? routeId,
+    Value<double>? latitude,
+    Value<double>? longitude,
+    Value<double?>? altitude,
+    Value<double?>? speed,
+    Value<double?>? accuracy,
+    Value<DateTime>? timestamp,
+    Value<int>? pointIndex,
+  }) {
+    return RoutePointsCompanion(
+      id: id ?? this.id,
+      routeId: routeId ?? this.routeId,
+      latitude: latitude ?? this.latitude,
+      longitude: longitude ?? this.longitude,
+      altitude: altitude ?? this.altitude,
+      speed: speed ?? this.speed,
+      accuracy: accuracy ?? this.accuracy,
+      timestamp: timestamp ?? this.timestamp,
+      pointIndex: pointIndex ?? this.pointIndex,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (routeId.present) {
+      map['route_id'] = Variable<String>(routeId.value);
+    }
+    if (latitude.present) {
+      map['latitude'] = Variable<double>(latitude.value);
+    }
+    if (longitude.present) {
+      map['longitude'] = Variable<double>(longitude.value);
+    }
+    if (altitude.present) {
+      map['altitude'] = Variable<double>(altitude.value);
+    }
+    if (speed.present) {
+      map['speed'] = Variable<double>(speed.value);
+    }
+    if (accuracy.present) {
+      map['accuracy'] = Variable<double>(accuracy.value);
+    }
+    if (timestamp.present) {
+      map['timestamp'] = Variable<DateTime>(timestamp.value);
+    }
+    if (pointIndex.present) {
+      map['point_index'] = Variable<int>(pointIndex.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('RoutePointsCompanion(')
+          ..write('id: $id, ')
+          ..write('routeId: $routeId, ')
+          ..write('latitude: $latitude, ')
+          ..write('longitude: $longitude, ')
+          ..write('altitude: $altitude, ')
+          ..write('speed: $speed, ')
+          ..write('accuracy: $accuracy, ')
+          ..write('timestamp: $timestamp, ')
+          ..write('pointIndex: $pointIndex')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -4351,6 +5662,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $GoalsTable goals = $GoalsTable(this);
   late final $GoalRecordsTable goalRecords = $GoalRecordsTable(this);
   late final $CalendarEventsTable calendarEvents = $CalendarEventsTable(this);
+  late final $RoutesTable routes = $RoutesTable(this);
+  late final $RoutePointsTable routePoints = $RoutePointsTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -4362,7 +5675,19 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     goals,
     goalRecords,
     calendarEvents,
+    routes,
+    routePoints,
   ];
+  @override
+  StreamQueryUpdateRules get streamUpdateRules => const StreamQueryUpdateRules([
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'routes',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('route_points', kind: UpdateKind.delete)],
+    ),
+  ]);
 }
 
 typedef $$EntriesTableCreateCompanionBuilder = EntriesCompanion Function({
@@ -6608,6 +7933,828 @@ typedef $$CalendarEventsTableProcessedTableManager =
       CalendarEvent,
       PrefetchHooks Function()
     >;
+typedef $$RoutesTableCreateCompanionBuilder = RoutesCompanion Function({
+  required String id,
+  Value<String> title,
+  Value<String> activityType,
+  Value<String> status,
+  required DateTime startTime,
+  Value<DateTime?> endTime,
+  Value<double> totalDistanceMeters,
+  Value<int> durationSeconds,
+  Value<double> avgPaceSecondsPerKm,
+  Value<bool> isSynced,
+  Value<DateTime> createdAt,
+  Value<DateTime> updatedAt,
+  Value<int> rowid,
+});
+typedef $$RoutesTableUpdateCompanionBuilder = RoutesCompanion Function({
+  Value<String> id,
+  Value<String> title,
+  Value<String> activityType,
+  Value<String> status,
+  Value<DateTime> startTime,
+  Value<DateTime?> endTime,
+  Value<double> totalDistanceMeters,
+  Value<int> durationSeconds,
+  Value<double> avgPaceSecondsPerKm,
+  Value<bool> isSynced,
+  Value<DateTime> createdAt,
+  Value<DateTime> updatedAt,
+  Value<int> rowid,
+});
+
+final class $$RoutesTableReferences
+    extends BaseReferences<_$AppDatabase, $RoutesTable, Route> {
+  $$RoutesTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static MultiTypedResultKey<$RoutePointsTable, List<RoutePoint>>
+  _routePointsRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.routePoints,
+    aliasName: 'routes__id__route_points__route_id',
+  );
+
+  $$RoutePointsTableProcessedTableManager get routePointsRefs {
+    final manager = $$RoutePointsTableTableManager(
+      $_db,
+      $_db.routePoints,
+    ).filter((f) => f.routeId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_routePointsRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+}
+
+class $$RoutesTableFilterComposer
+    extends Composer<_$AppDatabase, $RoutesTable> {
+  $$RoutesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get activityType => $composableBuilder(
+    column: $table.activityType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get startTime => $composableBuilder(
+    column: $table.startTime,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get endTime => $composableBuilder(
+    column: $table.endTime,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get totalDistanceMeters => $composableBuilder(
+    column: $table.totalDistanceMeters,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get durationSeconds => $composableBuilder(
+    column: $table.durationSeconds,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get avgPaceSecondsPerKm => $composableBuilder(
+    column: $table.avgPaceSecondsPerKm,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isSynced => $composableBuilder(
+    column: $table.isSynced,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  Expression<bool> routePointsRefs(
+    Expression<bool> Function($$RoutePointsTableFilterComposer f) f,
+  ) {
+    final $$RoutePointsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.routePoints,
+      getReferencedColumn: (t) => t.routeId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$RoutePointsTableFilterComposer(
+            $db: $db,
+            $table: $db.routePoints,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$RoutesTableOrderingComposer
+    extends Composer<_$AppDatabase, $RoutesTable> {
+  $$RoutesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get activityType => $composableBuilder(
+    column: $table.activityType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get startTime => $composableBuilder(
+    column: $table.startTime,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get endTime => $composableBuilder(
+    column: $table.endTime,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get totalDistanceMeters => $composableBuilder(
+    column: $table.totalDistanceMeters,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get durationSeconds => $composableBuilder(
+    column: $table.durationSeconds,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get avgPaceSecondsPerKm => $composableBuilder(
+    column: $table.avgPaceSecondsPerKm,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isSynced => $composableBuilder(
+    column: $table.isSynced,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$RoutesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $RoutesTable> {
+  $$RoutesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get title =>
+      $composableBuilder(column: $table.title, builder: (column) => column);
+
+  GeneratedColumn<String> get activityType => $composableBuilder(
+    column: $table.activityType,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get status =>
+      $composableBuilder(column: $table.status, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get startTime =>
+      $composableBuilder(column: $table.startTime, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get endTime =>
+      $composableBuilder(column: $table.endTime, builder: (column) => column);
+
+  GeneratedColumn<double> get totalDistanceMeters => $composableBuilder(
+    column: $table.totalDistanceMeters,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get durationSeconds => $composableBuilder(
+    column: $table.durationSeconds,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get avgPaceSecondsPerKm => $composableBuilder(
+    column: $table.avgPaceSecondsPerKm,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get isSynced =>
+      $composableBuilder(column: $table.isSynced, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  Expression<T> routePointsRefs<T extends Object>(
+    Expression<T> Function($$RoutePointsTableAnnotationComposer a) f,
+  ) {
+    final $$RoutePointsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.routePoints,
+      getReferencedColumn: (t) => t.routeId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$RoutePointsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.routePoints,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$RoutesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $RoutesTable,
+          Route,
+          $$RoutesTableFilterComposer,
+          $$RoutesTableOrderingComposer,
+          $$RoutesTableAnnotationComposer,
+          $$RoutesTableCreateCompanionBuilder,
+          $$RoutesTableUpdateCompanionBuilder,
+          (Route, $$RoutesTableReferences),
+          Route,
+          PrefetchHooks Function({bool routePointsRefs})
+        > {
+  $$RoutesTableTableManager(_$AppDatabase db, $RoutesTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$RoutesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$RoutesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$RoutesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> title = const Value.absent(),
+                Value<String> activityType = const Value.absent(),
+                Value<String> status = const Value.absent(),
+                Value<DateTime> startTime = const Value.absent(),
+                Value<DateTime?> endTime = const Value.absent(),
+                Value<double> totalDistanceMeters = const Value.absent(),
+                Value<int> durationSeconds = const Value.absent(),
+                Value<double> avgPaceSecondsPerKm = const Value.absent(),
+                Value<bool> isSynced = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => RoutesCompanion(
+                id: id,
+                title: title,
+                activityType: activityType,
+                status: status,
+                startTime: startTime,
+                endTime: endTime,
+                totalDistanceMeters: totalDistanceMeters,
+                durationSeconds: durationSeconds,
+                avgPaceSecondsPerKm: avgPaceSecondsPerKm,
+                isSynced: isSynced,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                Value<String> title = const Value.absent(),
+                Value<String> activityType = const Value.absent(),
+                Value<String> status = const Value.absent(),
+                required DateTime startTime,
+                Value<DateTime?> endTime = const Value.absent(),
+                Value<double> totalDistanceMeters = const Value.absent(),
+                Value<int> durationSeconds = const Value.absent(),
+                Value<double> avgPaceSecondsPerKm = const Value.absent(),
+                Value<bool> isSynced = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => RoutesCompanion.insert(
+                id: id,
+                title: title,
+                activityType: activityType,
+                status: status,
+                startTime: startTime,
+                endTime: endTime,
+                totalDistanceMeters: totalDistanceMeters,
+                durationSeconds: durationSeconds,
+                avgPaceSecondsPerKm: avgPaceSecondsPerKm,
+                isSynced: isSynced,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$RoutesTable, Route>(table),
+                  $$RoutesTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({routePointsRefs = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [if (routePointsRefs) db.routePoints],
+              addJoins: null,
+              getPrefetchedDataCallback: (items) async {
+                return [
+                  if (routePointsRefs)
+                    await $_getPrefetchedData<Route, $RoutesTable, RoutePoint>(
+                      currentTable: table,
+                      referencedTable: $$RoutesTableReferences
+                          ._routePointsRefsTable(db),
+                      managerFromTypedResult: (p0) => $$RoutesTableReferences(
+                        db,
+                        table,
+                        p0,
+                      ).routePointsRefs,
+                      referencedItemsForCurrentItem: (item, referencedItems) =>
+                          referencedItems.where((e) => e.routeId == item.id),
+                      typedResults: items,
+                    ),
+                ];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$RoutesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $RoutesTable,
+      Route,
+      $$RoutesTableFilterComposer,
+      $$RoutesTableOrderingComposer,
+      $$RoutesTableAnnotationComposer,
+      $$RoutesTableCreateCompanionBuilder,
+      $$RoutesTableUpdateCompanionBuilder,
+      (Route, $$RoutesTableReferences),
+      Route,
+      PrefetchHooks Function({bool routePointsRefs})
+    >;
+typedef $$RoutePointsTableCreateCompanionBuilder =
+    RoutePointsCompanion Function({
+      Value<int> id,
+      required String routeId,
+      required double latitude,
+      required double longitude,
+      Value<double?> altitude,
+      Value<double?> speed,
+      Value<double?> accuracy,
+      required DateTime timestamp,
+      required int pointIndex,
+    });
+typedef $$RoutePointsTableUpdateCompanionBuilder =
+    RoutePointsCompanion Function({
+      Value<int> id,
+      Value<String> routeId,
+      Value<double> latitude,
+      Value<double> longitude,
+      Value<double?> altitude,
+      Value<double?> speed,
+      Value<double?> accuracy,
+      Value<DateTime> timestamp,
+      Value<int> pointIndex,
+    });
+
+final class $$RoutePointsTableReferences
+    extends BaseReferences<_$AppDatabase, $RoutePointsTable, RoutePoint> {
+  $$RoutePointsTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static $RoutesTable _routeIdTable(_$AppDatabase db) =>
+      db.routes.createAlias('route_points__route_id__routes__id');
+
+  $$RoutesTableProcessedTableManager get routeId {
+    final $_column = $_itemColumn<String>('route_id')!;
+
+    final manager = $$RoutesTableTableManager(
+      $_db,
+      $_db.routes,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_routeIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$RoutePointsTableFilterComposer
+    extends Composer<_$AppDatabase, $RoutePointsTable> {
+  $$RoutePointsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get latitude => $composableBuilder(
+    column: $table.latitude,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get longitude => $composableBuilder(
+    column: $table.longitude,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get altitude => $composableBuilder(
+    column: $table.altitude,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get speed => $composableBuilder(
+    column: $table.speed,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get accuracy => $composableBuilder(
+    column: $table.accuracy,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get timestamp => $composableBuilder(
+    column: $table.timestamp,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get pointIndex => $composableBuilder(
+    column: $table.pointIndex,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$RoutesTableFilterComposer get routeId {
+    final $$RoutesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.routeId,
+      referencedTable: $db.routes,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$RoutesTableFilterComposer(
+            $db: $db,
+            $table: $db.routes,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$RoutePointsTableOrderingComposer
+    extends Composer<_$AppDatabase, $RoutePointsTable> {
+  $$RoutePointsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get latitude => $composableBuilder(
+    column: $table.latitude,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get longitude => $composableBuilder(
+    column: $table.longitude,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get altitude => $composableBuilder(
+    column: $table.altitude,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get speed => $composableBuilder(
+    column: $table.speed,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get accuracy => $composableBuilder(
+    column: $table.accuracy,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get timestamp => $composableBuilder(
+    column: $table.timestamp,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get pointIndex => $composableBuilder(
+    column: $table.pointIndex,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$RoutesTableOrderingComposer get routeId {
+    final $$RoutesTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.routeId,
+      referencedTable: $db.routes,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$RoutesTableOrderingComposer(
+            $db: $db,
+            $table: $db.routes,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$RoutePointsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $RoutePointsTable> {
+  $$RoutePointsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<double> get latitude =>
+      $composableBuilder(column: $table.latitude, builder: (column) => column);
+
+  GeneratedColumn<double> get longitude =>
+      $composableBuilder(column: $table.longitude, builder: (column) => column);
+
+  GeneratedColumn<double> get altitude =>
+      $composableBuilder(column: $table.altitude, builder: (column) => column);
+
+  GeneratedColumn<double> get speed =>
+      $composableBuilder(column: $table.speed, builder: (column) => column);
+
+  GeneratedColumn<double> get accuracy =>
+      $composableBuilder(column: $table.accuracy, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get timestamp =>
+      $composableBuilder(column: $table.timestamp, builder: (column) => column);
+
+  GeneratedColumn<int> get pointIndex => $composableBuilder(
+    column: $table.pointIndex,
+    builder: (column) => column,
+  );
+
+  $$RoutesTableAnnotationComposer get routeId {
+    final $$RoutesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.routeId,
+      referencedTable: $db.routes,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$RoutesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.routes,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$RoutePointsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $RoutePointsTable,
+          RoutePoint,
+          $$RoutePointsTableFilterComposer,
+          $$RoutePointsTableOrderingComposer,
+          $$RoutePointsTableAnnotationComposer,
+          $$RoutePointsTableCreateCompanionBuilder,
+          $$RoutePointsTableUpdateCompanionBuilder,
+          (RoutePoint, $$RoutePointsTableReferences),
+          RoutePoint,
+          PrefetchHooks Function({bool routeId})
+        > {
+  $$RoutePointsTableTableManager(_$AppDatabase db, $RoutePointsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$RoutePointsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$RoutePointsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$RoutePointsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> routeId = const Value.absent(),
+                Value<double> latitude = const Value.absent(),
+                Value<double> longitude = const Value.absent(),
+                Value<double?> altitude = const Value.absent(),
+                Value<double?> speed = const Value.absent(),
+                Value<double?> accuracy = const Value.absent(),
+                Value<DateTime> timestamp = const Value.absent(),
+                Value<int> pointIndex = const Value.absent(),
+              }) => RoutePointsCompanion(
+                id: id,
+                routeId: routeId,
+                latitude: latitude,
+                longitude: longitude,
+                altitude: altitude,
+                speed: speed,
+                accuracy: accuracy,
+                timestamp: timestamp,
+                pointIndex: pointIndex,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required String routeId,
+                required double latitude,
+                required double longitude,
+                Value<double?> altitude = const Value.absent(),
+                Value<double?> speed = const Value.absent(),
+                Value<double?> accuracy = const Value.absent(),
+                required DateTime timestamp,
+                required int pointIndex,
+              }) => RoutePointsCompanion.insert(
+                id: id,
+                routeId: routeId,
+                latitude: latitude,
+                longitude: longitude,
+                altitude: altitude,
+                speed: speed,
+                accuracy: accuracy,
+                timestamp: timestamp,
+                pointIndex: pointIndex,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$RoutePointsTable, RoutePoint>(table),
+                  $$RoutePointsTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({routeId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (routeId) {
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.routeId,
+                        referencedTable: $$RoutePointsTableReferences
+                            ._routeIdTable(db),
+                        referencedColumn: $$RoutePointsTableReferences
+                            ._routeIdTable(db)
+                            .id,
+                      ) as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$RoutePointsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $RoutePointsTable,
+      RoutePoint,
+      $$RoutePointsTableFilterComposer,
+      $$RoutePointsTableOrderingComposer,
+      $$RoutePointsTableAnnotationComposer,
+      $$RoutePointsTableCreateCompanionBuilder,
+      $$RoutePointsTableUpdateCompanionBuilder,
+      (RoutePoint, $$RoutePointsTableReferences),
+      RoutePoint,
+      PrefetchHooks Function({bool routeId})
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -6624,4 +8771,8 @@ class $AppDatabaseManager {
       $$GoalRecordsTableTableManager(_db, _db.goalRecords);
   $$CalendarEventsTableTableManager get calendarEvents =>
       $$CalendarEventsTableTableManager(_db, _db.calendarEvents);
+  $$RoutesTableTableManager get routes =>
+      $$RoutesTableTableManager(_db, _db.routes);
+  $$RoutePointsTableTableManager get routePoints =>
+      $$RoutePointsTableTableManager(_db, _db.routePoints);
 }
