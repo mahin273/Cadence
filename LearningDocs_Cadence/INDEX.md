@@ -27,7 +27,7 @@ Running table of contents and roadmap for the Cadence offline-first personal ope
 | 18 | [Full Time-Blocking Planner](18.full-time-blocking-planner.md) | Integrate interactive calendar planner linking routines, study blocks, and conflict detection. | `#calendar #planner #timeblocking` | Complete |
 | 19 | [Cross-Module Aggregation & Weekly Review](19.cross-module-aggregation-weekly-review.md) | Read across expenses, movement, study, and goals to generate automated weekly review summaries. | `#aggregation #analytics #review` | Complete |
 | 20 | [Net Worth & Balance Tracking](20.net-worth-balance-tracking.md) | Track historical account balances and visualize net worth trajectory. | `#finance #fl_chart #analytics` | Complete |
-| R4 | Review Chunks 16–20 | Review routines, time-blocking, cross-module joins, and financial graphing. | `#review` | Planned |
+| R4 | [Review Chunks 16–20](R4.review-chunks-16-20.md) | Review routines, time-blocking, cross-module joins, and financial graphing. | `#review` | Complete |
 | 21 | Debt & Lending Ledger | Manage debts and IOUs (owed to me vs I owe) with settlement tracking. | `#finance #ledger` | Planned |
 | 22 | Android Screen-Time Integration | Query Android `UsageStatsManager` for app usage rollups correlated with daily productivity. | `#android #usage-stats #analytics` | Planned |
 | 23 | Biometric Security & Full JSON Export | Add biometric app lock (`local_auth`) and one-click JSON export for complete data sovereignty. | `#security #biometrics #export #privacy` | Planned |
