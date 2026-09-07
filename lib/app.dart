@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'core/theme/circadian_theme.dart';
 import 'core/theme/theme_provider.dart';
+import 'core/security/security_providers.dart';
+import 'core/security/presentation/app_lock_screen.dart';
 import 'features/dashboard/presentation/dashboard_screen.dart';
 
 class CadenceApp extends ConsumerWidget {
@@ -59,7 +61,15 @@ class CadenceApp extends ConsumerWidget {
           theme: themeData,
           darkTheme: darkThemeData,
           themeMode: themeMode,
-          home: const DashboardScreen(),
+          home: Consumer(
+            builder: (context, ref, _) {
+              final isLocked = ref.watch(isAppLockedProvider);
+              if (isLocked) {
+                return const AppLockScreen();
+              }
+              return const DashboardScreen();
+            },
+          ),
         );
       },
     );
