@@ -10761,6 +10761,526 @@ class DebtPaymentsCompanion extends UpdateCompanion<DebtPayment> {
   }
 }
 
+class $ScreenTimeSnapshotsTable extends ScreenTimeSnapshots
+    with TableInfo<$ScreenTimeSnapshotsTable, ScreenTimeSnapshot> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ScreenTimeSnapshotsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _dateMeta = const VerificationMeta('date');
+  @override
+  late final GeneratedColumn<DateTime> date = GeneratedColumn<DateTime>(
+    'date',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _packageNameMeta = const VerificationMeta(
+    'packageName',
+  );
+  @override
+  late final GeneratedColumn<String> packageName = GeneratedColumn<String>(
+    'package_name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _appNameMeta = const VerificationMeta(
+    'appName',
+  );
+  @override
+  late final GeneratedColumn<String> appName = GeneratedColumn<String>(
+    'app_name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _categoryMeta = const VerificationMeta(
+    'category',
+  );
+  @override
+  late final GeneratedColumn<String> category = GeneratedColumn<String>(
+    'category',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _durationMinutesMeta = const VerificationMeta(
+    'durationMinutes',
+  );
+  @override
+  late final GeneratedColumn<int> durationMinutes = GeneratedColumn<int>(
+    'duration_minutes',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  static const VerificationMeta _isSyncedMeta = const VerificationMeta(
+    'isSynced',
+  );
+  @override
+  late final GeneratedColumn<bool> isSynced = GeneratedColumn<bool>(
+    'is_synced',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_synced" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    date,
+    packageName,
+    appName,
+    category,
+    durationMinutes,
+    createdAt,
+    isSynced,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'screen_time_snapshots';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<ScreenTimeSnapshot> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('date')) {
+      context.handle(
+        _dateMeta,
+        date.isAcceptableOrUnknown(data['date']!, _dateMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_dateMeta);
+    }
+    if (data.containsKey('package_name')) {
+      context.handle(
+        _packageNameMeta,
+        packageName.isAcceptableOrUnknown(
+          data['package_name']!,
+          _packageNameMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_packageNameMeta);
+    }
+    if (data.containsKey('app_name')) {
+      context.handle(
+        _appNameMeta,
+        appName.isAcceptableOrUnknown(data['app_name']!, _appNameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_appNameMeta);
+    }
+    if (data.containsKey('category')) {
+      context.handle(
+        _categoryMeta,
+        category.isAcceptableOrUnknown(data['category']!, _categoryMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_categoryMeta);
+    }
+    if (data.containsKey('duration_minutes')) {
+      context.handle(
+        _durationMinutesMeta,
+        durationMinutes.isAcceptableOrUnknown(
+          data['duration_minutes']!,
+          _durationMinutesMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_durationMinutesMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    }
+    if (data.containsKey('is_synced')) {
+      context.handle(
+        _isSyncedMeta,
+        isSynced.isAcceptableOrUnknown(data['is_synced']!, _isSyncedMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  ScreenTimeSnapshot map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ScreenTimeSnapshot(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      date: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}date'],
+      )!,
+      packageName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}package_name'],
+      )!,
+      appName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}app_name'],
+      )!,
+      category: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}category'],
+      )!,
+      durationMinutes: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}duration_minutes'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      isSynced: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_synced'],
+      )!,
+    );
+  }
+
+  @override
+  $ScreenTimeSnapshotsTable createAlias(String alias) {
+    return $ScreenTimeSnapshotsTable(attachedDatabase, alias);
+  }
+}
+
+class ScreenTimeSnapshot extends DataClass
+    implements Insertable<ScreenTimeSnapshot> {
+  final String id;
+  final DateTime date;
+  final String packageName;
+  final String appName;
+  final String category;
+  final int durationMinutes;
+  final DateTime createdAt;
+  final bool isSynced;
+  const ScreenTimeSnapshot({
+    required this.id,
+    required this.date,
+    required this.packageName,
+    required this.appName,
+    required this.category,
+    required this.durationMinutes,
+    required this.createdAt,
+    required this.isSynced,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['date'] = Variable<DateTime>(date);
+    map['package_name'] = Variable<String>(packageName);
+    map['app_name'] = Variable<String>(appName);
+    map['category'] = Variable<String>(category);
+    map['duration_minutes'] = Variable<int>(durationMinutes);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['is_synced'] = Variable<bool>(isSynced);
+    return map;
+  }
+
+  ScreenTimeSnapshotsCompanion toCompanion(bool nullToAbsent) {
+    return ScreenTimeSnapshotsCompanion(
+      id: Value(id),
+      date: Value(date),
+      packageName: Value(packageName),
+      appName: Value(appName),
+      category: Value(category),
+      durationMinutes: Value(durationMinutes),
+      createdAt: Value(createdAt),
+      isSynced: Value(isSynced),
+    );
+  }
+
+  factory ScreenTimeSnapshot.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ScreenTimeSnapshot(
+      id: serializer.fromJson<String>(json['id']),
+      date: serializer.fromJson<DateTime>(json['date']),
+      packageName: serializer.fromJson<String>(json['packageName']),
+      appName: serializer.fromJson<String>(json['appName']),
+      category: serializer.fromJson<String>(json['category']),
+      durationMinutes: serializer.fromJson<int>(json['durationMinutes']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      isSynced: serializer.fromJson<bool>(json['isSynced']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'date': serializer.toJson<DateTime>(date),
+      'packageName': serializer.toJson<String>(packageName),
+      'appName': serializer.toJson<String>(appName),
+      'category': serializer.toJson<String>(category),
+      'durationMinutes': serializer.toJson<int>(durationMinutes),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'isSynced': serializer.toJson<bool>(isSynced),
+    };
+  }
+
+  ScreenTimeSnapshot copyWith({
+    String? id,
+    DateTime? date,
+    String? packageName,
+    String? appName,
+    String? category,
+    int? durationMinutes,
+    DateTime? createdAt,
+    bool? isSynced,
+  }) => ScreenTimeSnapshot(
+    id: id ?? this.id,
+    date: date ?? this.date,
+    packageName: packageName ?? this.packageName,
+    appName: appName ?? this.appName,
+    category: category ?? this.category,
+    durationMinutes: durationMinutes ?? this.durationMinutes,
+    createdAt: createdAt ?? this.createdAt,
+    isSynced: isSynced ?? this.isSynced,
+  );
+  ScreenTimeSnapshot copyWithCompanion(ScreenTimeSnapshotsCompanion data) {
+    return ScreenTimeSnapshot(
+      id: data.id.present ? data.id.value : this.id,
+      date: data.date.present ? data.date.value : this.date,
+      packageName: data.packageName.present
+          ? data.packageName.value
+          : this.packageName,
+      appName: data.appName.present ? data.appName.value : this.appName,
+      category: data.category.present ? data.category.value : this.category,
+      durationMinutes: data.durationMinutes.present
+          ? data.durationMinutes.value
+          : this.durationMinutes,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      isSynced: data.isSynced.present ? data.isSynced.value : this.isSynced,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ScreenTimeSnapshot(')
+          ..write('id: $id, ')
+          ..write('date: $date, ')
+          ..write('packageName: $packageName, ')
+          ..write('appName: $appName, ')
+          ..write('category: $category, ')
+          ..write('durationMinutes: $durationMinutes, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('isSynced: $isSynced')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    date,
+    packageName,
+    appName,
+    category,
+    durationMinutes,
+    createdAt,
+    isSynced,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ScreenTimeSnapshot &&
+          other.id == this.id &&
+          other.date == this.date &&
+          other.packageName == this.packageName &&
+          other.appName == this.appName &&
+          other.category == this.category &&
+          other.durationMinutes == this.durationMinutes &&
+          other.createdAt == this.createdAt &&
+          other.isSynced == this.isSynced);
+}
+
+class ScreenTimeSnapshotsCompanion extends UpdateCompanion<ScreenTimeSnapshot> {
+  final Value<String> id;
+  final Value<DateTime> date;
+  final Value<String> packageName;
+  final Value<String> appName;
+  final Value<String> category;
+  final Value<int> durationMinutes;
+  final Value<DateTime> createdAt;
+  final Value<bool> isSynced;
+  final Value<int> rowid;
+  const ScreenTimeSnapshotsCompanion({
+    this.id = const Value.absent(),
+    this.date = const Value.absent(),
+    this.packageName = const Value.absent(),
+    this.appName = const Value.absent(),
+    this.category = const Value.absent(),
+    this.durationMinutes = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.isSynced = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  ScreenTimeSnapshotsCompanion.insert({
+    required String id,
+    required DateTime date,
+    required String packageName,
+    required String appName,
+    required String category,
+    required int durationMinutes,
+    this.createdAt = const Value.absent(),
+    this.isSynced = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       date = Value(date),
+       packageName = Value(packageName),
+       appName = Value(appName),
+       category = Value(category),
+       durationMinutes = Value(durationMinutes);
+  static Insertable<ScreenTimeSnapshot> custom({
+    Expression<String>? id,
+    Expression<DateTime>? date,
+    Expression<String>? packageName,
+    Expression<String>? appName,
+    Expression<String>? category,
+    Expression<int>? durationMinutes,
+    Expression<DateTime>? createdAt,
+    Expression<bool>? isSynced,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (date != null) 'date': date,
+      if (packageName != null) 'package_name': packageName,
+      if (appName != null) 'app_name': appName,
+      if (category != null) 'category': category,
+      if (durationMinutes != null) 'duration_minutes': durationMinutes,
+      if (createdAt != null) 'created_at': createdAt,
+      if (isSynced != null) 'is_synced': isSynced,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  ScreenTimeSnapshotsCompanion copyWith({
+    Value<String>? id,
+    Value<DateTime>? date,
+    Value<String>? packageName,
+    Value<String>? appName,
+    Value<String>? category,
+    Value<int>? durationMinutes,
+    Value<DateTime>? createdAt,
+    Value<bool>? isSynced,
+    Value<int>? rowid,
+  }) {
+    return ScreenTimeSnapshotsCompanion(
+      id: id ?? this.id,
+      date: date ?? this.date,
+      packageName: packageName ?? this.packageName,
+      appName: appName ?? this.appName,
+      category: category ?? this.category,
+      durationMinutes: durationMinutes ?? this.durationMinutes,
+      createdAt: createdAt ?? this.createdAt,
+      isSynced: isSynced ?? this.isSynced,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (date.present) {
+      map['date'] = Variable<DateTime>(date.value);
+    }
+    if (packageName.present) {
+      map['package_name'] = Variable<String>(packageName.value);
+    }
+    if (appName.present) {
+      map['app_name'] = Variable<String>(appName.value);
+    }
+    if (category.present) {
+      map['category'] = Variable<String>(category.value);
+    }
+    if (durationMinutes.present) {
+      map['duration_minutes'] = Variable<int>(durationMinutes.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (isSynced.present) {
+      map['is_synced'] = Variable<bool>(isSynced.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ScreenTimeSnapshotsCompanion(')
+          ..write('id: $id, ')
+          ..write('date: $date, ')
+          ..write('packageName: $packageName, ')
+          ..write('appName: $appName, ')
+          ..write('category: $category, ')
+          ..write('durationMinutes: $durationMinutes, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('isSynced: $isSynced, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -10784,6 +11304,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   );
   late final $DebtsTable debts = $DebtsTable(this);
   late final $DebtPaymentsTable debtPayments = $DebtPaymentsTable(this);
+  late final $ScreenTimeSnapshotsTable screenTimeSnapshots =
+      $ScreenTimeSnapshotsTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -10806,6 +11328,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     accountBalances,
     debts,
     debtPayments,
+    screenTimeSnapshots,
   ];
   @override
   StreamQueryUpdateRules get streamUpdateRules => const StreamQueryUpdateRules([
@@ -17522,6 +18045,294 @@ typedef $$DebtPaymentsTableProcessedTableManager =
       DebtPayment,
       PrefetchHooks Function({bool debtId})
     >;
+typedef $$ScreenTimeSnapshotsTableCreateCompanionBuilder =
+    ScreenTimeSnapshotsCompanion Function({
+      required String id,
+      required DateTime date,
+      required String packageName,
+      required String appName,
+      required String category,
+      required int durationMinutes,
+      Value<DateTime> createdAt,
+      Value<bool> isSynced,
+      Value<int> rowid,
+    });
+typedef $$ScreenTimeSnapshotsTableUpdateCompanionBuilder =
+    ScreenTimeSnapshotsCompanion Function({
+      Value<String> id,
+      Value<DateTime> date,
+      Value<String> packageName,
+      Value<String> appName,
+      Value<String> category,
+      Value<int> durationMinutes,
+      Value<DateTime> createdAt,
+      Value<bool> isSynced,
+      Value<int> rowid,
+    });
+
+class $$ScreenTimeSnapshotsTableFilterComposer
+    extends Composer<_$AppDatabase, $ScreenTimeSnapshotsTable> {
+  $$ScreenTimeSnapshotsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get date => $composableBuilder(
+    column: $table.date,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get packageName => $composableBuilder(
+    column: $table.packageName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get appName => $composableBuilder(
+    column: $table.appName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get category => $composableBuilder(
+    column: $table.category,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get durationMinutes => $composableBuilder(
+    column: $table.durationMinutes,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isSynced => $composableBuilder(
+    column: $table.isSynced,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$ScreenTimeSnapshotsTableOrderingComposer
+    extends Composer<_$AppDatabase, $ScreenTimeSnapshotsTable> {
+  $$ScreenTimeSnapshotsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get date => $composableBuilder(
+    column: $table.date,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get packageName => $composableBuilder(
+    column: $table.packageName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get appName => $composableBuilder(
+    column: $table.appName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get category => $composableBuilder(
+    column: $table.category,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get durationMinutes => $composableBuilder(
+    column: $table.durationMinutes,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isSynced => $composableBuilder(
+    column: $table.isSynced,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$ScreenTimeSnapshotsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $ScreenTimeSnapshotsTable> {
+  $$ScreenTimeSnapshotsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get date =>
+      $composableBuilder(column: $table.date, builder: (column) => column);
+
+  GeneratedColumn<String> get packageName => $composableBuilder(
+    column: $table.packageName,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get appName =>
+      $composableBuilder(column: $table.appName, builder: (column) => column);
+
+  GeneratedColumn<String> get category =>
+      $composableBuilder(column: $table.category, builder: (column) => column);
+
+  GeneratedColumn<int> get durationMinutes => $composableBuilder(
+    column: $table.durationMinutes,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<bool> get isSynced =>
+      $composableBuilder(column: $table.isSynced, builder: (column) => column);
+}
+
+class $$ScreenTimeSnapshotsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $ScreenTimeSnapshotsTable,
+          ScreenTimeSnapshot,
+          $$ScreenTimeSnapshotsTableFilterComposer,
+          $$ScreenTimeSnapshotsTableOrderingComposer,
+          $$ScreenTimeSnapshotsTableAnnotationComposer,
+          $$ScreenTimeSnapshotsTableCreateCompanionBuilder,
+          $$ScreenTimeSnapshotsTableUpdateCompanionBuilder,
+          (
+            ScreenTimeSnapshot,
+            BaseReferences<
+              _$AppDatabase,
+              $ScreenTimeSnapshotsTable,
+              ScreenTimeSnapshot
+            >,
+          ),
+          ScreenTimeSnapshot,
+          PrefetchHooks Function()
+        > {
+  $$ScreenTimeSnapshotsTableTableManager(
+    _$AppDatabase db,
+    $ScreenTimeSnapshotsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ScreenTimeSnapshotsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$ScreenTimeSnapshotsTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$ScreenTimeSnapshotsTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<DateTime> date = const Value.absent(),
+                Value<String> packageName = const Value.absent(),
+                Value<String> appName = const Value.absent(),
+                Value<String> category = const Value.absent(),
+                Value<int> durationMinutes = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<bool> isSynced = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ScreenTimeSnapshotsCompanion(
+                id: id,
+                date: date,
+                packageName: packageName,
+                appName: appName,
+                category: category,
+                durationMinutes: durationMinutes,
+                createdAt: createdAt,
+                isSynced: isSynced,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required DateTime date,
+                required String packageName,
+                required String appName,
+                required String category,
+                required int durationMinutes,
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<bool> isSynced = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ScreenTimeSnapshotsCompanion.insert(
+                id: id,
+                date: date,
+                packageName: packageName,
+                appName: appName,
+                category: category,
+                durationMinutes: durationMinutes,
+                createdAt: createdAt,
+                isSynced: isSynced,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$ScreenTimeSnapshotsTable, ScreenTimeSnapshot>(
+                    table,
+                  ),
+                  BaseReferences<
+                    _$AppDatabase,
+                    $ScreenTimeSnapshotsTable,
+                    ScreenTimeSnapshot
+                  >(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$ScreenTimeSnapshotsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $ScreenTimeSnapshotsTable,
+      ScreenTimeSnapshot,
+      $$ScreenTimeSnapshotsTableFilterComposer,
+      $$ScreenTimeSnapshotsTableOrderingComposer,
+      $$ScreenTimeSnapshotsTableAnnotationComposer,
+      $$ScreenTimeSnapshotsTableCreateCompanionBuilder,
+      $$ScreenTimeSnapshotsTableUpdateCompanionBuilder,
+      (
+        ScreenTimeSnapshot,
+        BaseReferences<
+          _$AppDatabase,
+          $ScreenTimeSnapshotsTable,
+          ScreenTimeSnapshot
+        >,
+      ),
+      ScreenTimeSnapshot,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -17560,4 +18371,6 @@ class $AppDatabaseManager {
       $$DebtsTableTableManager(_db, _db.debts);
   $$DebtPaymentsTableTableManager get debtPayments =>
       $$DebtPaymentsTableTableManager(_db, _db.debtPayments);
+  $$ScreenTimeSnapshotsTableTableManager get screenTimeSnapshots =>
+      $$ScreenTimeSnapshotsTableTableManager(_db, _db.screenTimeSnapshots);
 }

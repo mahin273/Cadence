@@ -19,6 +19,7 @@ import '../../routines/presentation/routines_view.dart';
 import '../../study/widgets/focus_timer_card.dart';
 import '../../review/presentation/weekly_review_view.dart';
 import '../../review/providers/weekly_review_providers.dart';
+import '../../analytics/widgets/screen_time_card.dart';
 
 class DashboardScreen extends ConsumerStatefulWidget {
   const DashboardScreen({super.key});
@@ -585,6 +586,11 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
 
           // Weekly Review & Life Rhythm Pulse
           const _WeeklyReviewBannerCard(),
+
+          const SizedBox(height: 16),
+
+          // Screen Time & Digital Wellbeing
+          const ScreenTimeCard(),
 
           const SizedBox(height: 16),
 
