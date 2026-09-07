@@ -7,6 +7,7 @@ import 'tables/goals_table.dart';
 import 'tables/calendar_events_table.dart';
 import 'tables/routes_table.dart';
 import 'tables/routines_table.dart';
+import 'tables/study_sessions_table.dart';
 import 'connection/native_connection.dart';
 import '../../features/finance/models/finance_models.dart';
 
@@ -24,12 +25,13 @@ part 'app_database.g.dart';
   Routines,
   RoutineItems,
   RoutineCompletions,
+  StudySessions,
 ])
 class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? executor]) : super(executor ?? openConnection());
 
   @override
-  int get schemaVersion => 6;
+  int get schemaVersion => 7;
 
   @override
   MigrationStrategy get migration {
@@ -57,6 +59,9 @@ class AppDatabase extends _$AppDatabase {
           await m.createTable(routines);
           await m.createTable(routineItems);
           await m.createTable(routineCompletions);
+        }
+        if (from < 7) {
+          await m.createTable(studySessions);
         }
       },
       beforeOpen: (details) async {
@@ -710,6 +715,46 @@ class AppDatabase extends _$AppDatabase {
       await (delete(routineCompletions)..where((tbl) => tbl.itemId.equals(itemId))).go();
       await (delete(routineItems)..where((tbl) => tbl.id.equals(itemId))).go();
     });
+  }
+
+  // -------------------------------------------------------------
+  // Study & Pomodoro Sessions
+  // -------------------------------------------------------------
+
+  /// Insert a recorded study / focus session.
+  Future<void> insertStudySession(StudySessionsCompanion session) async {
+    await into(studySessions).insert(session);
+  }
+
+  /// Watch recent study sessions ordered by startedAt descending.
+  Stream<List<StudySession>> watchRecentStudySessions({int limit = 30}) {
+    return (select(studySessions)
+          ..orderBy([(tbl) => OrderingTerm.desc(tbl.startedAt)])
+          ..limit(limit))
+        .watch();
+  }
+
+  /// Watch today's study sessions starting after local midnight.
+  Stream<List<StudySession>> watchTodayStudySessions(DateTime localMidnight) {
+    return (select(studySessions)
+          ..where((tbl) => tbl.startedAt.isBiggerOrEqualValue(localMidnight))
+          ..orderBy([(tbl) => OrderingTerm.desc(tbl.startedAt)]))
+        .watch();
+  }
+
+  /// Get today's total focus/work study seconds.
+  Future<int> getTodayTotalStudySeconds(DateTime localMidnight) async {
+    final query = selectOnly(studySessions)
+      ..addColumns([studySessions.actualSeconds.sum()])
+      ..where(studySessions.startedAt.isBiggerOrEqualValue(localMidnight) &
+              studySessions.sessionType.equals('work'));
+    final result = await query.getSingle();
+    return result.read(studySessions.actualSeconds.sum()) ?? 0;
+  }
+
+  /// Delete a study session by ID.
+  Future<void> deleteStudySession(String id) async {
+    await (delete(studySessions)..where((tbl) => tbl.id.equals(id))).go();
   }
 }
 
