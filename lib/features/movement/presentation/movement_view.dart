@@ -4,6 +4,8 @@ import 'package:intl/intl.dart';
 import '../models/movement_models.dart';
 import '../providers/movement_provider.dart';
 import '../providers/foreground_service_provider.dart';
+import '../widgets/route_recording_card.dart';
+import '../widgets/recent_routes_list.dart';
 
 /// Comprehensive Movement & Step Tracking Dashboard.
 class MovementView extends ConsumerWidget {
@@ -315,7 +317,15 @@ class MovementView extends ConsumerWidget {
                 );
               },
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 24),
+
+            // Live GPS Route Recording Card
+            const RouteRecordingCard(),
+            const SizedBox(height: 24),
+
+            // Historical Completed GPS Routes
+            const RecentRoutesList(),
+            const SizedBox(height: 24),
 
             // Quick-Log Action Buttons
             Text(
