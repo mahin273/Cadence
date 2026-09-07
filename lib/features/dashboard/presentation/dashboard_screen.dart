@@ -11,6 +11,10 @@ import '../../auth/presentation/auth_modal.dart';
 import '../../entries/presentation/quick_log_modal.dart';
 import '../../entries/presentation/entries_feed.dart';
 import '../../entries/providers/entries_provider.dart';
+import '../../finance/presentation/finance_view.dart';
+import '../../goals/widgets/goals_overview_section.dart';
+import '../../calendar/presentation/planner_view.dart';
+import '../../movement/presentation/movement_view.dart';
 
 class DashboardScreen extends ConsumerStatefulWidget {
   const DashboardScreen({super.key});
@@ -102,9 +106,101 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
           ),
         ],
       ),
-      body: ListView(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
-        children: [
+      body: _buildBody(
+        context,
+        ref,
+        phase,
+        currentTime,
+        timeFormatter,
+        colorScheme,
+        theme,
+        themeSettings,
+      ),
+      floatingActionButton: _selectedTabIndex == 0
+          ? FloatingActionButton.extended(
+              onPressed: () => QuickLogModal.show(context),
+              icon: const Icon(Icons.add_rounded),
+              label: const Text('Quick Log'),
+            )
+          : null,
+      bottomNavigationBar: NavigationBar(
+        selectedIndex: _selectedTabIndex,
+        onDestinationSelected: (idx) {
+          setState(() {
+            _selectedTabIndex = idx;
+          });
+        },
+        destinations: const [
+          NavigationDestination(
+            icon: Icon(Icons.dashboard_outlined),
+            selectedIcon: Icon(Icons.dashboard_rounded),
+            label: 'Today',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.directions_run_outlined),
+            selectedIcon: Icon(Icons.directions_run_rounded),
+            label: 'Movement',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.account_balance_wallet_outlined),
+            selectedIcon: Icon(Icons.account_balance_wallet_rounded),
+            label: 'Finance',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.calendar_month_outlined),
+            selectedIcon: Icon(Icons.calendar_month_rounded),
+            label: 'Planner',
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildBody(
+    BuildContext context,
+    WidgetRef ref,
+    CircadianPhase phase,
+    DateTime currentTime,
+    DateFormat timeFormatter,
+    ColorScheme colorScheme,
+    ThemeData theme,
+    ThemeSettings themeSettings,
+  ) {
+    switch (_selectedTabIndex) {
+      case 2:
+        return const FinanceView();
+      case 1:
+        return const MovementView();
+      case 3:
+        return const PlannerView();
+      case 0:
+      default:
+        return _buildTodayDashboard(
+          context,
+          ref,
+          phase,
+          currentTime,
+          timeFormatter,
+          colorScheme,
+          theme,
+          themeSettings,
+        );
+    }
+  }
+
+  Widget _buildTodayDashboard(
+    BuildContext context,
+    WidgetRef ref,
+    CircadianPhase phase,
+    DateTime currentTime,
+    DateFormat timeFormatter,
+    ColorScheme colorScheme,
+    ThemeData theme,
+    ThemeSettings themeSettings,
+  ) {
+    return ListView(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+      children: [
           // Circadian Status Banner
           Card(
             color: colorScheme.surfaceContainerHighest,
@@ -459,6 +555,11 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
 
           const SizedBox(height: 16),
 
+          // Daily Goals & Progress Tracker
+          const GoalsOverviewSection(),
+
+          const SizedBox(height: 16),
+
           // Foundation Status
           Card(
             child: Padding(
@@ -501,48 +602,16 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                     title: 'Shared entries & multi-category feed active',
                     completed: true,
                   ),
+                  const _ChecklistItem(
+                    title: 'Daily goals & automated streak tracking active',
+                    completed: true,
+                  ),
                 ],
               ),
             ),
           ),
         ],
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => QuickLogModal.show(context),
-        icon: const Icon(Icons.add_rounded),
-        label: const Text('Quick Log'),
-      ),
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: _selectedTabIndex,
-        onDestinationSelected: (idx) {
-          setState(() {
-            _selectedTabIndex = idx;
-          });
-        },
-        destinations: const [
-          NavigationDestination(
-            icon: Icon(Icons.dashboard_outlined),
-            selectedIcon: Icon(Icons.dashboard_rounded),
-            label: 'Today',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.directions_run_outlined),
-            selectedIcon: Icon(Icons.directions_run_rounded),
-            label: 'Movement',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.account_balance_wallet_outlined),
-            selectedIcon: Icon(Icons.account_balance_wallet_rounded),
-            label: 'Finance',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.calendar_month_outlined),
-            selectedIcon: Icon(Icons.calendar_month_rounded),
-            label: 'Planner',
-          ),
-        ],
-      ),
-    );
+      );
   }
 
   Color _syncStatusColor(SyncStatus status, ColorScheme colors) {

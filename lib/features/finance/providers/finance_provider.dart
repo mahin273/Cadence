@@ -35,6 +35,12 @@ final monthlyExpensesStreamProvider = StreamProvider<List<Expense>>((ref) {
   return db.watchExpensesForMonth(month);
 });
 
+/// Reactive stream of all active expenses.
+final allExpensesStreamProvider = StreamProvider<List<Expense>>((ref) {
+  final db = ref.watch(appDatabaseProvider);
+  return db.watchExpenses();
+});
+
 /// Reactive stream of category spend summaries for the selected calendar month.
 final categorySpendStreamProvider = StreamProvider<List<CategorySpend>>((ref) {
   final db = ref.watch(appDatabaseProvider);
