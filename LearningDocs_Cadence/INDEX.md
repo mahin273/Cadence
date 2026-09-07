@@ -21,7 +21,7 @@ Running table of contents and roadmap for the Cadence offline-first personal ope
 | 13 | [GPS Route Recording & Drift Buffering](13.gps-route-recording-drift-buffering.md) | Stream location updates, buffer coordinate points locally, and compute distance/pace. | `#geolocator #gps #battery #drift` | Complete |
 | 14 | [Route Map Visualization](14.route-map-visualization.md) | Render recorded GPS tracks on an interactive OpenStreetMap view using `flutter_map`. | `#maps #flutter_map #gis` | Complete |
 | 15 | [PostGIS Route Sync to Supabase](15.postgis-route-sync-supabase.md) | Transform local route paths into PostGIS LineString geometry and sync on route completion. | `#postgis #supabase #geo #sync` | Complete |
-| R3 | Review Chunks 11–15 | Review sensor streaming, Android lifecycle/foreground service, and GIS geometry. | `#review` | Planned |
+| R3 | [Review Chunks 11–15](R3.review-chunks-11-15.md) | Review sensor streaming, Android lifecycle/foreground service, and GIS geometry. | `#review` | Complete |
 | 16 | Routines & Daily Scheduling Checklist | Build daily routines with sortable tasks and completion histories. | `#routines #habits #ui` | Planned |
 | 17 | Pomodoro & Study Time Tracker | Implement focused study session timer with tag association (e.g., "Thesis"). | `#timer #pomodoro #study` | Planned |
 | 18 | Full Time-Blocking Planner | Integrate interactive drag-and-drop calendar planner linking routines and study blocks. | `#syncfusion #calendar #planner` | Planned |
