@@ -8,6 +8,7 @@ import 'tables/calendar_events_table.dart';
 import 'tables/routes_table.dart';
 import 'tables/routines_table.dart';
 import 'tables/study_sessions_table.dart';
+import 'tables/weekly_reviews_table.dart';
 import 'connection/native_connection.dart';
 import '../../features/finance/models/finance_models.dart';
 
@@ -26,12 +27,13 @@ part 'app_database.g.dart';
   RoutineItems,
   RoutineCompletions,
   StudySessions,
+  WeeklyReviews,
 ])
 class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? executor]) : super(executor ?? openConnection());
 
   @override
-  int get schemaVersion => 7;
+  int get schemaVersion => 8;
 
   @override
   MigrationStrategy get migration {
@@ -62,6 +64,9 @@ class AppDatabase extends _$AppDatabase {
         }
         if (from < 7) {
           await m.createTable(studySessions);
+        }
+        if (from < 8) {
+          await m.createTable(weeklyReviews);
         }
       },
       beforeOpen: (details) async {
@@ -755,6 +760,41 @@ class AppDatabase extends _$AppDatabase {
   /// Delete a study session by ID.
   Future<void> deleteStudySession(String id) async {
     await (delete(studySessions)..where((tbl) => tbl.id.equals(id))).go();
+  }
+
+  // -------------------------------------------------------------
+  // Weekly Reviews & Aggregation Snapshots
+  // -------------------------------------------------------------
+
+  /// Upsert a weekly review snapshot.
+  Future<int> upsertWeeklyReview(WeeklyReviewsCompanion review) {
+    return into(weeklyReviews).insertOnConflictUpdate(review);
+  }
+
+  /// Watch weekly review for a specific week start date.
+  Stream<WeeklyReview?> watchWeeklyReviewForDate(DateTime weekStart) {
+    return (select(weeklyReviews)
+          ..where((tbl) => tbl.weekStartDate.equals(weekStart)))
+        .watchSingleOrNull();
+  }
+
+  /// Get weekly review for a specific week start date.
+  Future<WeeklyReview?> getWeeklyReviewForDate(DateTime weekStart) {
+    return (select(weeklyReviews)
+          ..where((tbl) => tbl.weekStartDate.equals(weekStart)))
+        .getSingleOrNull();
+  }
+
+  /// Watch all weekly reviews sorted newest to oldest.
+  Stream<List<WeeklyReview>> watchAllWeeklyReviews() {
+    return (select(weeklyReviews)
+          ..orderBy([(tbl) => OrderingTerm.desc(tbl.weekStartDate)]))
+        .watch();
+  }
+
+  /// Delete a weekly review by ID.
+  Future<void> deleteWeeklyReview(String id) async {
+    await (delete(weeklyReviews)..where((tbl) => tbl.id.equals(id))).go();
   }
 }
 

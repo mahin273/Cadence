@@ -172,8 +172,9 @@ void main() {
       expect(find.text('Operating Systems'), findsOneWidget);
       expect(find.textContaining('25 mins'), findsOneWidget);
 
-      container.dispose();
       await tester.pumpWidget(const SizedBox());
+      await tester.pump(const Duration(milliseconds: 100));
+      container.dispose();
       await tester.pump(const Duration(milliseconds: 100));
     });
   });
