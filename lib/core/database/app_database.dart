@@ -11,6 +11,7 @@ import 'tables/study_sessions_table.dart';
 import 'tables/weekly_reviews_table.dart';
 import 'tables/accounts_table.dart';
 import 'tables/debts_table.dart';
+import 'tables/screen_time_table.dart';
 import 'connection/native_connection.dart';
 import '../../features/finance/models/finance_models.dart';
 
@@ -34,12 +35,13 @@ part 'app_database.g.dart';
   AccountBalances,
   Debts,
   DebtPayments,
+  ScreenTimeSnapshots,
 ])
 class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? executor]) : super(executor ?? openConnection());
 
   @override
-  int get schemaVersion => 10;
+  int get schemaVersion => 11;
 
   @override
   MigrationStrategy get migration {
@@ -81,6 +83,9 @@ class AppDatabase extends _$AppDatabase {
         if (from < 10) {
           await m.createTable(debts);
           await m.createTable(debtPayments);
+        }
+        if (from < 11) {
+          await m.createTable(screenTimeSnapshots);
         }
       },
       beforeOpen: (details) async {
@@ -1010,6 +1015,48 @@ class AppDatabase extends _$AppDatabase {
         updatedAt: Value(DateTime.now()),
       ),
     );
+  }
+
+  // -------------------------------------------------------------
+  // Screen Time Operations (Chunk 22)
+  // -------------------------------------------------------------
+
+  /// Replace daily screen time snapshots for a specific date transactionally.
+  Future<void> saveScreenTimeSnapshots(
+    DateTime date,
+    List<ScreenTimeSnapshotsCompanion> snapshots,
+  ) async {
+    final dayStart = DateTime(date.year, date.month, date.day);
+    await transaction(() async {
+      await (delete(screenTimeSnapshots)..where((tbl) => tbl.date.equals(dayStart))).go();
+      await batch((b) {
+        b.insertAll(screenTimeSnapshots, snapshots);
+      });
+    });
+  }
+
+  /// Watch screen time snapshots for a specific calendar date.
+  Stream<List<ScreenTimeSnapshot>> watchScreenTimeForDate(DateTime date) {
+    final dayStart = DateTime(date.year, date.month, date.day);
+    return (select(screenTimeSnapshots)
+          ..where((tbl) => tbl.date.equals(dayStart))
+          ..orderBy([
+            (tbl) => OrderingTerm.desc(tbl.durationMinutes),
+            (tbl) => OrderingTerm.desc(tbl.rowId),
+          ]))
+        .watch();
+  }
+
+  /// Fetch screen time snapshots for a specific date once.
+  Future<List<ScreenTimeSnapshot>> getScreenTimeForDate(DateTime date) {
+    final dayStart = DateTime(date.year, date.month, date.day);
+    return (select(screenTimeSnapshots)
+          ..where((tbl) => tbl.date.equals(dayStart))
+          ..orderBy([
+            (tbl) => OrderingTerm.desc(tbl.durationMinutes),
+            (tbl) => OrderingTerm.desc(tbl.rowId),
+          ]))
+        .get();
   }
 }
 

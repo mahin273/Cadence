@@ -29,7 +29,7 @@ Running table of contents and roadmap for the Cadence offline-first personal ope
 | 20 | [Net Worth & Balance Tracking](20.net-worth-balance-tracking.md) | Track historical account balances and visualize net worth trajectory. | `#finance #fl_chart #analytics` | Complete |
 | R4 | [Review Chunks 16–20](R4.review-chunks-16-20.md) | Review routines, time-blocking, cross-module joins, and financial graphing. | `#review` | Complete |
 | 21 | [Debt & Lending Ledger](21.debt-lending-ledger.md) | Manage debts and IOUs (owed to me vs I owe) with settlement tracking. | `#finance #ledger` | Complete |
-| 22 | Android Screen-Time Integration | Query Android `UsageStatsManager` for app usage rollups correlated with daily productivity. | `#android #usage-stats #analytics` | Planned |
+| 22 | [Android Screen-Time Integration](22.android-screen-time-integration.md) | Query Android `UsageStatsManager` for app usage rollups correlated with daily productivity. | `#android #usage-stats #analytics` | Complete |
 | 23 | Biometric Security & Full JSON Export | Add biometric app lock (`local_auth`) and one-click JSON export for complete data sovereignty. | `#security #biometrics #export #privacy` | Planned |
 | 24 | Unified Home Dashboard & Global Quick-Add | Build centralized daily overview and modular quick-entry modal. | `#dashboard #ui #ux` | Planned |
 | 25 | Unified Tag Explorer & Cross-Module Search | Query and navigate items across entries, expenses, and study sessions by shared tags. | `#search #indexing #tags` | Planned |
