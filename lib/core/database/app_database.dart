@@ -9,6 +9,7 @@ import 'tables/routes_table.dart';
 import 'tables/routines_table.dart';
 import 'tables/study_sessions_table.dart';
 import 'tables/weekly_reviews_table.dart';
+import 'tables/accounts_table.dart';
 import 'connection/native_connection.dart';
 import '../../features/finance/models/finance_models.dart';
 
@@ -28,12 +29,14 @@ part 'app_database.g.dart';
   RoutineCompletions,
   StudySessions,
   WeeklyReviews,
+  Accounts,
+  AccountBalances,
 ])
 class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? executor]) : super(executor ?? openConnection());
 
   @override
-  int get schemaVersion => 8;
+  int get schemaVersion => 9;
 
   @override
   MigrationStrategy get migration {
@@ -67,6 +70,10 @@ class AppDatabase extends _$AppDatabase {
         }
         if (from < 8) {
           await m.createTable(weeklyReviews);
+        }
+        if (from < 9) {
+          await m.createTable(accounts);
+          await m.createTable(accountBalances);
         }
       },
       beforeOpen: (details) async {
@@ -795,6 +802,98 @@ class AppDatabase extends _$AppDatabase {
   /// Delete a weekly review by ID.
   Future<void> deleteWeeklyReview(String id) async {
     await (delete(weeklyReviews)..where((tbl) => tbl.id.equals(id))).go();
+  }
+
+  // -------------------------------------------------------------
+  // Accounts & Net Worth Tracking
+  // -------------------------------------------------------------
+
+  /// Insert or update an account.
+  Future<int> upsertAccount(AccountsCompanion account) {
+    return into(accounts).insertOnConflictUpdate(account);
+  }
+
+  /// Watch all non-archived accounts sorted by type ('asset' first) and name.
+  Stream<List<Account>> watchActiveAccounts() {
+    return (select(accounts)
+          ..where((tbl) => tbl.isArchived.equals(false))
+          ..orderBy([
+            (tbl) => OrderingTerm.asc(tbl.type),
+            (tbl) => OrderingTerm.asc(tbl.name),
+          ]))
+        .watch();
+  }
+
+  /// Get all active accounts.
+  Future<List<Account>> getActiveAccounts() {
+    return (select(accounts)
+          ..where((tbl) => tbl.isArchived.equals(false))
+          ..orderBy([
+            (tbl) => OrderingTerm.asc(tbl.type),
+            (tbl) => OrderingTerm.asc(tbl.name),
+          ]))
+        .get();
+  }
+
+  /// Delete an account by ID (cascades to delete all its balances).
+  Future<void> deleteAccount(String id) async {
+    await (delete(accounts)..where((tbl) => tbl.id.equals(id))).go();
+  }
+
+  /// Insert a balance snapshot for an account.
+  Future<void> insertAccountBalance(AccountBalancesCompanion balance) async {
+    await into(accountBalances).insert(balance);
+  }
+
+  /// Delete a single balance snapshot by ID.
+  Future<void> deleteAccountBalance(String id) async {
+    await (delete(accountBalances)..where((tbl) => tbl.id.equals(id))).go();
+  }
+
+  /// Get the latest recorded balance for a specific account.
+  Future<AccountBalance?> getLatestBalanceForAccount(String accountId) {
+    return (select(accountBalances)
+          ..where((tbl) => tbl.accountId.equals(accountId))
+          ..orderBy([
+            (tbl) => OrderingTerm.desc(tbl.recordedAt),
+            (tbl) => OrderingTerm.desc(tbl.createdAt),
+            (tbl) => OrderingTerm.desc(tbl.rowId),
+          ])
+          ..limit(1))
+        .getSingleOrNull();
+  }
+
+  /// Watch balance history for a single account.
+  Stream<List<AccountBalance>> watchBalancesForAccount(String accountId) {
+    return (select(accountBalances)
+          ..where((tbl) => tbl.accountId.equals(accountId))
+          ..orderBy([
+            (tbl) => OrderingTerm.desc(tbl.recordedAt),
+            (tbl) => OrderingTerm.desc(tbl.createdAt),
+            (tbl) => OrderingTerm.desc(tbl.rowId),
+          ]))
+        .watch();
+  }
+
+  /// Watch all account balances across all accounts.
+  Stream<List<AccountBalance>> watchAllAccountBalances() {
+    return (select(accountBalances)
+          ..orderBy([
+            (tbl) => OrderingTerm.desc(tbl.recordedAt),
+            (tbl) => OrderingTerm.desc(tbl.createdAt),
+            (tbl) => OrderingTerm.desc(tbl.rowId),
+          ]))
+        .watch();
+  }
+
+  /// Get all balances recorded within a specific date range.
+  Future<List<AccountBalance>> getBalancesBetween(DateTime start, DateTime end) {
+    return (select(accountBalances)
+          ..where((tbl) =>
+              tbl.recordedAt.isBiggerOrEqualValue(start) &
+              tbl.recordedAt.isSmallerOrEqualValue(end))
+          ..orderBy([(tbl) => OrderingTerm.asc(tbl.recordedAt)]))
+        .get();
   }
 }
 
