@@ -6,6 +6,7 @@ import '../providers/calendar_provider.dart';
 import '../widgets/horizontal_date_strip.dart';
 import '../widgets/calendar_event_card.dart';
 import '../widgets/create_event_dialog.dart';
+import '../widgets/time_blocking_timeline.dart';
 
 /// Comprehensive Agenda Planner screen providing Day & Week schedule views.
 class PlannerView extends ConsumerWidget {
@@ -70,7 +71,7 @@ class PlannerView extends ConsumerWidget {
                 ),
                 const SizedBox(width: 4),
 
-                // View Mode Toggle (Day vs Week)
+                // View Mode Toggle (Day vs Timeline vs Week)
                 SegmentedButton<CalendarViewMode>(
                   showSelectedIcon: false,
                   style: const ButtonStyle(
@@ -81,6 +82,10 @@ class PlannerView extends ConsumerWidget {
                     ButtonSegment(
                       value: CalendarViewMode.day,
                       label: Text('Day', style: TextStyle(fontSize: 12)),
+                    ),
+                    ButtonSegment(
+                      value: CalendarViewMode.timeline,
+                      label: Text('Blocks', style: TextStyle(fontSize: 12)),
                     ),
                     ButtonSegment(
                       value: CalendarViewMode.week,
@@ -104,9 +109,7 @@ class PlannerView extends ConsumerWidget {
 
           // Agenda Body based on ViewMode
           Expanded(
-            child: viewMode == CalendarViewMode.day
-                ? _buildDayAgenda(context, ref, selectedDate)
-                : _buildWeekAgenda(context, ref, selectedDate),
+            child: _buildBodyForViewMode(context, ref, viewMode, selectedDate),
           ),
         ],
       ),
@@ -121,6 +124,22 @@ class PlannerView extends ConsumerWidget {
         label: const Text('Add Event'),
       ),
     );
+  }
+
+  Widget _buildBodyForViewMode(
+    BuildContext context,
+    WidgetRef ref,
+    CalendarViewMode viewMode,
+    DateTime selectedDate,
+  ) {
+    switch (viewMode) {
+      case CalendarViewMode.timeline:
+        return TimeBlockingTimeline(selectedDate: selectedDate);
+      case CalendarViewMode.week:
+        return _buildWeekAgenda(context, ref, selectedDate);
+      case CalendarViewMode.day:
+        return _buildDayAgenda(context, ref, selectedDate);
+    }
   }
 
   Widget _buildDayAgenda(
