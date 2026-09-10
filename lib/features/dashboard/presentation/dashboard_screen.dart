@@ -8,9 +8,12 @@ import '../../../core/supabase/auth_provider.dart';
 import '../../../core/sync/sync_provider.dart';
 import '../../../core/sync/sync_state.dart';
 import '../../auth/presentation/auth_modal.dart';
-import '../../entries/presentation/quick_log_modal.dart';
 import '../../entries/presentation/entries_feed.dart';
 import '../../entries/providers/entries_provider.dart';
+import '../../tags/presentation/tag_explorer_view.dart';
+import '../widgets/global_quick_add_modal.dart';
+import '../widgets/hero_greeting_card.dart';
+import '../widgets/today_vitals_bar.dart';
 import '../../finance/presentation/finance_view.dart';
 import '../../goals/widgets/goals_overview_section.dart';
 import '../../calendar/presentation/planner_view.dart';
@@ -106,6 +109,13 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
             },
           ),
           IconButton(
+            icon: const Icon(Icons.search_rounded),
+            tooltip: 'Tag Explorer & Search',
+            onPressed: () => Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const TagExplorerView()),
+            ),
+          ),
+          IconButton(
             icon: const Icon(Icons.palette_outlined),
             tooltip: 'Theme Modes',
             onPressed: () => _showThemeModal(context, ref),
@@ -138,9 +148,14 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
       ),
       floatingActionButton: _selectedTabIndex == 0
           ? FloatingActionButton.extended(
-              onPressed: () => QuickLogModal.show(context),
+              onPressed: () => GlobalQuickAddModal.show(
+                context,
+                onNavigateToTab: (idx) => setState(() {
+                  _selectedTabIndex = idx;
+                }),
+              ),
               icon: const Icon(Icons.add_rounded),
-              label: const Text('Quick Log'),
+              label: const Text('Quick Add'),
             )
           : null,
       bottomNavigationBar: NavigationBar(
@@ -228,6 +243,14 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     return ListView(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
       children: [
+          HeroGreetingCard(phase: phase, currentTime: currentTime),
+
+          const SizedBox(height: 12),
+
+          const TodayVitalsBar(),
+
+          const SizedBox(height: 12),
+
           // Circadian Status Banner
           Card(
             color: colorScheme.surfaceContainerHighest,
@@ -572,8 +595,13 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
               ),
               TextButton.icon(
                 icon: const Icon(Icons.add_circle_outline, size: 18),
-                label: const Text('Quick Log'),
-                onPressed: () => QuickLogModal.show(context),
+                label: const Text('Quick Add'),
+                onPressed: () => GlobalQuickAddModal.show(
+                  context,
+                  onNavigateToTab: (idx) => setState(() {
+                    _selectedTabIndex = idx;
+                  }),
+                ),
               ),
             ],
           ),
