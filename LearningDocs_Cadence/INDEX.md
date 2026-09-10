@@ -31,7 +31,7 @@ Running table of contents and roadmap for the Cadence offline-first personal ope
 | 21 | [Debt & Lending Ledger](21.debt-lending-ledger.md) | Manage debts and IOUs (owed to me vs I owe) with settlement tracking. | `#finance #ledger` | Complete |
 | 22 | [Android Screen-Time Integration](22.android-screen-time-integration.md) | Query Android `UsageStatsManager` for app usage rollups correlated with daily productivity. | `#android #usage-stats #analytics` | Complete |
 | 23 | [Biometric Security & Full JSON Export](23.biometric-security-full-json-export.md) | Add biometric app lock (`local_auth`) and one-click JSON export for complete data sovereignty. | `#security #biometrics #export #privacy` | Complete |
-| 24 | Unified Home Dashboard & Global Quick-Add | Build centralized daily overview and modular quick-entry modal. | `#dashboard #ui #ux` | Planned |
-| 25 | Unified Tag Explorer & Cross-Module Search | Query and navigate items across entries, expenses, and study sessions by shared tags. | `#search #indexing #tags` | Planned |
-| R5 | Review Chunks 21–25 | Review system security, Android platform channels, and global querying. | `#review` | Planned |
-| 26 | Final Release Polish, End-to-End Build & Summary | Perform end-to-end integration test, build release APK via GitHub Actions, and write SUMMARY.md. | `#release #ci-cd #summary` | Planned |
+| 24 | [Unified Home Dashboard & Global Quick-Add](24.unified-home-dashboard-quick-add.md) | Build centralized daily overview and modular quick-entry modal. | `#dashboard #ui #ux` | Complete |
+| 25 | [Unified Tag Explorer & Cross-Module Search](25.unified-tag-explorer-cross-module-search.md) | Query and navigate items across entries, expenses, and study sessions by shared tags. | `#search #indexing #tags` | Complete |
+| R5 | [Review Chunks 21–25](R5.review-chunks-21-25.md) | Review system security, Android platform channels, and global querying. | `#review` | Complete |
+| 26 | [Final Release Polish, End-to-End Build & Summary](26.final-release-polish-summary.md) | Perform end-to-end integration test, build release APK via GitHub Actions, and write SUMMARY.md. | `#release #ci-cd #summary` | Complete |
