@@ -628,58 +628,8 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
           // Screen Time & Digital Wellbeing
           const ScreenTimeCard(),
 
-          const SizedBox(height: 16),
 
-          // Foundation Status
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Architecture Initialized',
-                    style: theme.textTheme.titleSmall?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  const _ChecklistItem(
-                    title: 'Riverpod ProviderScope configured',
-                    completed: true,
-                  ),
-                  const _ChecklistItem(
-                    title: 'Dynamic color & circadian lerp active',
-                    completed: true,
-                  ),
-                  const _ChecklistItem(
-                    title: 'Material 3 tonal elevation applied',
-                    completed: true,
-                  ),
-                  const _ChecklistItem(
-                    title: 'Offline Drift SQLite database active',
-                    completed: true,
-                  ),
-                  const _ChecklistItem(
-                    title: 'Supabase Auth & GoTrue client wired',
-                    completed: true,
-                  ),
-                  const _ChecklistItem(
-                    title: 'Offline-first Drift & Supabase sync engine active',
-                    completed: true,
-                  ),
-                  const _ChecklistItem(
-                    title: 'Shared entries & multi-category feed active',
-                    completed: true,
-                  ),
-                  const _ChecklistItem(
-                    title: 'Daily goals & automated streak tracking active',
-                    completed: true,
-                  ),
-                ],
-              ),
-            ),
-          ),
+
         ],
       );
   }
@@ -835,47 +785,6 @@ class _ColorRoleCard extends StatelessWidget {
               color: onColor.withAlpha(200),
               fontSize: 10,
               fontFamily: 'monospace',
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _ChecklistItem extends StatelessWidget {
-  final String title;
-  final bool completed;
-
-  const _ChecklistItem({
-    required this.title,
-    required this.completed,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4.0),
-      child: Row(
-        children: [
-          Icon(
-            completed ? Icons.check_circle_rounded : Icons.radio_button_unchecked,
-            size: 18,
-            color: completed
-                ? theme.colorScheme.primary
-                : theme.colorScheme.outline,
-          ),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Text(
-              title,
-              style: TextStyle(
-                fontSize: 13,
-                color: completed
-                    ? theme.colorScheme.onSurface
-                    : theme.colorScheme.onSurfaceVariant,
-              ),
             ),
           ),
         ],
