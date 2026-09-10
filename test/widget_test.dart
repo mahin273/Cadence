@@ -77,32 +77,50 @@ void main() {
 
     expect(find.text('Supabase Cloud Account'), findsNothing);
 
-    // Verify Activity Feed section and filter chips
+    // Verify Activity Feed section and filter chips (scroll past the
+    // Chunk 24 hero greeting + vitals header first).
+    await tester.drag(find.byType(ListView).first, const Offset(0, -1400));
+    await tester.pump(const Duration(milliseconds: 500));
     expect(find.text("Today's Activity Feed"), findsOneWidget);
     expect(find.text('All Activity'), findsOneWidget);
     expect(find.text('Water'), findsOneWidget);
     expect(find.text('Habits'), findsOneWidget);
 
-    // Tap FloatingActionButton Quick Log
-    final fab = find.widgetWithText(FloatingActionButton, 'Quick Log');
+    // Tap FloatingActionButton Quick Add (Chunk 24 command palette)
+    final fab = find.widgetWithText(FloatingActionButton, 'Quick Add');
     expect(fab, findsOneWidget);
     await tester.tap(fab);
-    await tester.pumpAndSettle();
+    await tester.pump();
+    await tester.pump(const Duration(seconds: 1));
+
+    // Verify GlobalQuickAddModal appears with 6 rapid actions
+    expect(find.text('Thought / Habit'), findsOneWidget);
+    expect(find.text('Log Expense'), findsOneWidget);
+
+    // Dispatch the Thought / Habit action into the legacy QuickLogModal.
+    // (Bounded pumps: the palette pop + modal push overlap animations that
+    // pumpAndSettle can wait on indefinitely.)
+    await tester.tap(find.text('Thought / Habit'));
+    await tester.pump();
+    await tester.pump(const Duration(seconds: 1));
 
     // Verify QuickLogModal appears
     expect(find.text('Quick Log Entry'), findsOneWidget);
 
     // Select Habit segment
     await tester.tap(find.text('Habit'));
-    await tester.pumpAndSettle();
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 500));
 
     // Enter habit title
     await tester.enterText(find.byType(TextField).first, 'Read 20 pages');
-    await tester.pumpAndSettle();
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 500));
 
     // Tap Save Entry
     await tester.tap(find.text('Save Entry'));
-    await tester.pumpAndSettle();
+    await tester.pump();
+    await tester.pump(const Duration(seconds: 1));
 
     // Verify modal is dismissed and new habit entry appears in feed
     expect(find.text('Quick Log Entry'), findsNothing);
