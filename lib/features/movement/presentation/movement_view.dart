@@ -129,9 +129,69 @@ class MovementView extends ConsumerWidget {
                     ),
                   ],
                 ),
-                _buildStatusBadge(context, stepState),
+                _buildStatusBadge(context, ref, stepState),
               ],
             ),
+            if (stepState.status == StepSensorStatus.permissionDenied) ...[
+              const SizedBox(height: 16),
+              Card(
+                color: colorScheme.errorContainer.withAlpha(200),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16.0),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Icon(Icons.warning_amber_rounded,
+                              color: colorScheme.onErrorContainer),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              'Activity Recognition Permission Required',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: colorScheme.onErrorContainer,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 6),
+                      Text(
+                        stepState.errorMessage ??
+                            'Physical Activity permission is required to detect steps using hardware sensors.',
+                        style: TextStyle(
+                          fontSize: 13,
+                          color: colorScheme.onErrorContainer,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      Row(
+                        children: [
+                          FilledButton.tonal(
+                            onPressed: () => ref
+                                .read(stepTrackingProvider.notifier)
+                                .requestPermission(),
+                            child: const Text('Grant Permission'),
+                          ),
+                          const SizedBox(width: 8),
+                          TextButton(
+                            onPressed: () => ref
+                                .read(stepTrackingProvider.notifier)
+                                .openSettings(),
+                            child: const Text('Open Settings'),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
             const SizedBox(height: 24),
 
             // Large Circular Step Gauge
@@ -427,7 +487,8 @@ class MovementView extends ConsumerWidget {
     );
   }
 
-  Widget _buildStatusBadge(BuildContext context, MovementState state) {
+  Widget _buildStatusBadge(
+      BuildContext context, WidgetRef ref, MovementState state) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
@@ -465,27 +526,33 @@ class MovementView extends ConsumerWidget {
         break;
     }
 
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 4.0),
-      decoration: BoxDecoration(
-        color: badgeColor.withAlpha(30),
-        borderRadius: BorderRadius.circular(20.0),
-        border: Border.all(color: badgeColor.withAlpha(100)),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 14, color: badgeColor),
-          const SizedBox(width: 6),
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
-              color: badgeColor,
+    return InkWell(
+      borderRadius: BorderRadius.circular(20.0),
+      onTap: state.status == StepSensorStatus.permissionDenied
+          ? () => ref.read(stepTrackingProvider.notifier).requestPermission()
+          : null,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 4.0),
+        decoration: BoxDecoration(
+          color: badgeColor.withAlpha(30),
+          borderRadius: BorderRadius.circular(20.0),
+          border: Border.all(color: badgeColor.withAlpha(100)),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, size: 14, color: badgeColor),
+            const SizedBox(width: 6),
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+                color: badgeColor,
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

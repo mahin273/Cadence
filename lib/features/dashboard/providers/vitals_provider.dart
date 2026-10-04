@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../analytics/providers/screen_time_provider.dart';
 import '../../finance/providers/finance_provider.dart';
+import '../../movement/providers/movement_provider.dart';
 import '../../routines/providers/routines_provider.dart';
 import '../../study/providers/pomodoro_provider.dart';
 
@@ -15,6 +16,7 @@ class DailyVitalsSummary {
   final int focusMinutes;
   final int routinesCompleted;
   final int routinesTotal;
+  final int stepsToday;
 
   const DailyVitalsSummary({
     this.screenTimeMinutes = 0,
@@ -22,6 +24,7 @@ class DailyVitalsSummary {
     this.focusMinutes = 0,
     this.routinesCompleted = 0,
     this.routinesTotal = 0,
+    this.stepsToday = 0,
   });
 
   double get routinesProgress =>
@@ -86,17 +89,25 @@ final routinesProgressProvider = Provider<({int completed, int total, double pct
   return (completed: completed, total: total, pct: pct);
 });
 
+/// Steps today from the movement step tracking stream provider.
+final stepsTodayProvider = Provider<int>((ref) {
+  final stepsAsync = ref.watch(todayStepCountStreamProvider);
+  return stepsAsync.value ?? 0;
+});
+
 /// Combined vitals snapshot composing lightweight cross-module providers.
 final todayVitalsSummaryProvider = Provider<DailyVitalsSummary>((ref) {
   final screenMinutes = ref.watch(todayScreenMinutesProvider);
   final spent = ref.watch(todayExpensesTotalProvider);
   final focusSeconds = ref.watch(todayStudyWorkSecondsProvider);
   final routines = ref.watch(routinesProgressProvider);
+  final steps = ref.watch(stepsTodayProvider);
   return DailyVitalsSummary(
     screenTimeMinutes: screenMinutes,
     todaySpent: spent,
     focusMinutes: focusSeconds ~/ 60,
     routinesCompleted: routines.completed,
     routinesTotal: routines.total,
+    stepsToday: steps,
   );
 });

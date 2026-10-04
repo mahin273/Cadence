@@ -28,6 +28,12 @@ class TodayVitalsBar extends ConsumerWidget {
             color: Colors.blue,
           ),
           _VitalChip(
+            icon: Icons.directions_walk_outlined,
+            label: 'Steps',
+            value: '${vitals.stepsToday}',
+            color: Colors.teal,
+          ),
+          _VitalChip(
             icon: Icons.payments_outlined,
             label: 'Spent',
             value: currency.format(vitals.todaySpent),

@@ -13,12 +13,14 @@ class StepNormalizer {
   DateTime? todayDate;
   int accumulatedBeforeReboot;
   int lastRawCount;
+  int initialAccumulatedSteps;
 
   StepNormalizer({
     this.todayBaseline,
     this.todayDate,
     this.accumulatedBeforeReboot = 0,
     this.lastRawCount = 0,
+    this.initialAccumulatedSteps = 0,
   });
 
   /// Process a raw cumulative hardware step event.
@@ -28,11 +30,12 @@ class StepNormalizer {
 
     // Case 1: First event or new calendar day (midnight rollover)
     if (todayDate == null || !isSameDay(eventDay, todayDate!)) {
+      final isInitialSetupOnSameDay = todayDate == null && initialAccumulatedSteps > 0;
       todayDate = eventDay;
       todayBaseline = rawCount;
-      accumulatedBeforeReboot = 0;
+      accumulatedBeforeReboot = isInitialSetupOnSameDay ? initialAccumulatedSteps : 0;
       lastRawCount = rawCount;
-      return 0;
+      return accumulatedBeforeReboot;
     }
 
     // Case 2: Device reboot occurred during the day (hardware counter dropped to 0)

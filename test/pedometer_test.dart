@@ -4,6 +4,7 @@ import 'package:cadence/core/database/app_database.dart';
 import 'package:cadence/core/database/connection/native_connection.dart';
 import 'package:cadence/core/database/database_provider.dart';
 import 'package:cadence/core/supabase/auth_provider.dart';
+import 'package:cadence/features/entries/providers/entries_provider.dart';
 import 'package:cadence/features/movement/models/movement_models.dart';
 import 'package:cadence/features/movement/providers/movement_provider.dart';
 
@@ -77,6 +78,20 @@ void main() {
       stepsDay2 = normalizer.onStepCount(13450, day2.add(const Duration(minutes: 30)));
       expect(stepsDay2, 400);
     });
+
+    test('preserves existing today steps on startup using initialAccumulatedSteps', () {
+      final normalizer = StepNormalizer(initialAccumulatedSteps: 1800);
+      final day = DateTime(2026, 9, 8, 14, 0);
+
+      // App reboots or restarts midday with 1800 steps in DB. Hardware reports 9500 cumulative.
+      var steps = normalizer.onStepCount(9500, day);
+      expect(steps, 1800);
+      expect(normalizer.accumulatedBeforeReboot, 1800);
+
+      // User walks 200 more steps
+      steps = normalizer.onStepCount(9700, day.add(const Duration(minutes: 10)));
+      expect(steps, 2000);
+    });
   });
 
   group('MovementState Metrics Calculation', () {
@@ -147,6 +162,38 @@ void main() {
           .where((e) => e.type == 'steps')
           .fold<int>(0, (acc, e) => acc + e.value.toInt());
       expect(stepSum, 2500);
+    });
+
+    test('deterministic hardware pedometer id updates row in place without duplicate inflation', () async {
+      final entryController = container.read(entryControllerProvider);
+      const hardwareEntryId = 'pedometer_2026-09-08';
+
+      // First sensor persistence: 2500 steps
+      await entryController.logEntry(
+        id: hardwareEntryId,
+        type: 'steps',
+        value: 2500,
+        unit: 'steps',
+        metadata: {'source': 'hardware_pedometer'},
+      );
+
+      var entries = await db.watchEntriesByType('steps').first;
+      expect(entries.length, 1);
+      expect(entries.first.value, 2500.0);
+
+      // Second sensor persistence 5s later: 2550 steps
+      await entryController.logEntry(
+        id: hardwareEntryId,
+        type: 'steps',
+        value: 2550,
+        unit: 'steps',
+        metadata: {'source': 'hardware_pedometer'},
+      );
+
+      // Still 1 entry, value updated to 2550
+      entries = await db.watchEntriesByType('steps').first;
+      expect(entries.length, 1);
+      expect(entries.first.value, 2550.0);
     });
   });
 }

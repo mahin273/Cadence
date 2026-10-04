@@ -1,6 +1,9 @@
 import 'dart:async';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:pedometer/pedometer.dart';
+import 'package:permission_handler/permission_handler.dart';
 import '../../../core/database/database_provider.dart';
 import '../../entries/providers/entries_provider.dart';
 import '../models/movement_models.dart';
@@ -37,7 +40,59 @@ class StepTrackingNotifier extends Notifier<MovementState> {
   }
 
   /// Initialize hardware sensor stream subscriptions with defensive error handling.
-  void _initPedometer() {
+  Future<void> _initPedometer() async {
+    if (!ref.mounted) return;
+
+    // Check permissions on Android
+    if (defaultTargetPlatform == TargetPlatform.android) {
+      try {
+        final status = await Permission.activityRecognition.status;
+        if (!ref.mounted) return;
+        if (!status.isGranted) {
+          final result = await Permission.activityRecognition.request();
+          if (!ref.mounted) return;
+          if (!result.isGranted) {
+            state = state.copyWith(
+              status: StepSensorStatus.permissionDenied,
+              errorMessage: result.isPermanentlyDenied
+                  ? 'Activity Recognition permission is permanently denied. Please enable it in Settings.'
+                  : 'Activity Recognition permission is required for step counting.',
+            );
+            return;
+          }
+        }
+      } catch (_) {
+        // Gracefully continue if permission check is not supported (e.g. unit tests)
+      }
+    }
+
+    if (!ref.mounted) return;
+
+    // Restore today's accumulated steps from Drift database to avoid baseline wipe
+    try {
+      final db = ref.read(appDatabaseProvider);
+      final now = DateTime.now();
+      final dayKey = DateFormat('yyyy-MM-dd').format(now);
+      final todayEntries = await db.watchEntriesForDay(now).first;
+      if (!ref.mounted) return;
+      final hardwareEntry =
+          todayEntries.where((e) => e.id == 'pedometer_$dayKey').firstOrNull;
+      if (hardwareEntry != null && hardwareEntry.value > 0) {
+        final existingSteps = hardwareEntry.value.toInt();
+        _normalizer.initialAccumulatedSteps = existingSteps;
+        state = state.copyWith(stepsToday: existingSteps);
+      }
+    } catch (_) {
+      // In-memory or initial setup without entries
+    }
+
+    if (!ref.mounted) return;
+
+    await _stepCountSubscription?.cancel();
+    await _pedestrianStatusSubscription?.cancel();
+
+    if (!ref.mounted) return;
+
     try {
       _pedestrianStatusSubscription = Pedometer.pedestrianStatusStream.listen(
         _onPedestrianStatus,
@@ -49,12 +104,16 @@ class StepTrackingNotifier extends Notifier<MovementState> {
         onError: _onStepCountError,
       );
 
-      state = state.copyWith(status: StepSensorStatus.listening);
+      if (ref.mounted) {
+        state = state.copyWith(status: StepSensorStatus.listening);
+      }
     } catch (e) {
-      state = state.copyWith(
-        status: StepSensorStatus.unavailable,
-        errorMessage: e.toString(),
-      );
+      if (ref.mounted) {
+        state = state.copyWith(
+          status: StepSensorStatus.unavailable,
+          errorMessage: e.toString(),
+        );
+      }
     }
   }
 
@@ -102,8 +161,11 @@ class StepTrackingNotifier extends Notifier<MovementState> {
   Future<void> _persistStepsToDatabase(int steps) async {
     if (steps <= 0) return;
     try {
+      final now = DateTime.now();
+      final dayKey = DateFormat('yyyy-MM-dd').format(now);
       final entryController = ref.read(entryControllerProvider);
       await entryController.logEntry(
+        id: 'pedometer_$dayKey',
         type: 'steps',
         value: steps.toDouble(),
         unit: 'steps',
@@ -112,6 +174,42 @@ class StepTrackingNotifier extends Notifier<MovementState> {
     } catch (_) {
       // Database errors should not crash the sensor stream
     }
+  }
+
+  /// Request Activity Recognition permission explicitly.
+  Future<bool> requestPermission() async {
+    try {
+      final result = await Permission.activityRecognition.request();
+      if (result.isGranted) {
+        await _initPedometer();
+        return true;
+      } else if (result.isPermanentlyDenied) {
+        state = state.copyWith(
+          status: StepSensorStatus.permissionDenied,
+          errorMessage:
+              'Activity Recognition permission is permanently denied. Please enable it in Settings.',
+        );
+        return false;
+      } else {
+        state = state.copyWith(
+          status: StepSensorStatus.permissionDenied,
+          errorMessage:
+              'Activity Recognition permission is required for step counting.',
+        );
+        return false;
+      }
+    } catch (e) {
+      state = state.copyWith(
+        status: StepSensorStatus.unavailable,
+        errorMessage: e.toString(),
+      );
+      return false;
+    }
+  }
+
+  /// Open Android App Settings if permission is permanently denied.
+  Future<void> openSettings() async {
+    await openAppSettings();
   }
 
   /// Allow manual step logging (for workouts, manual entry, or testing on emulators).

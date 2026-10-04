@@ -39,6 +39,7 @@ class EntryController {
 
   /// Create and persist a new polymorphic entry.
   Future<String> logEntry({
+    String? id,
     required String type,
     required double value,
     String? unit,
@@ -47,8 +48,7 @@ class EntryController {
     Map<String, dynamic> metadata = const {},
     DateTime? occurredAt,
   }) async {
-    const uuid = Uuid();
-    final entryId = uuid.v4();
+    final entryId = id ?? const Uuid().v4();
     final userId = _ref.read(activeUserIdProvider);
     final now = DateTime.now();
 
