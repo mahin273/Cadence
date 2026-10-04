@@ -1,4 +1,7 @@
-Cadence-design-doc.md
+# Documentation - ignore all markdown except README.md
+LearningDocs_*/
+*.md
+!README.md
 
 # Miscellaneous
 *.class
