@@ -12,7 +12,10 @@ class SupabaseConfig {
 
   static const String _envAnonKey = String.fromEnvironment(
     'SUPABASE_ANON_KEY',
-    defaultValue: '',
+    defaultValue: String.fromEnvironment(
+      'SUPABASE_PUBLISHABLE_KEY',
+      defaultValue: '',
+    ),
   );
 
   static String _activeUrl = _envUrl;

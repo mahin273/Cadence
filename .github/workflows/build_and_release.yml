@@ -53,13 +53,15 @@ jobs:
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+          SUPABASE_PUBLISHABLE_KEY: ${{ secrets.SUPABASE_PUBLISHABLE_KEY }}
         run: |
           DART_ARGS=""
           if [ -n "$SUPABASE_URL" ]; then
             DART_ARGS="$DART_ARGS --dart-define=SUPABASE_URL=$SUPABASE_URL"
           fi
-          if [ -n "$SUPABASE_ANON_KEY" ]; then
-            DART_ARGS="$DART_ARGS --dart-define=SUPABASE_ANON_KEY=$SUPABASE_ANON_KEY"
+          KEY="${SUPABASE_ANON_KEY:-$SUPABASE_PUBLISHABLE_KEY}"
+          if [ -n "$KEY" ]; then
+            DART_ARGS="$DART_ARGS --dart-define=SUPABASE_ANON_KEY=$KEY --dart-define=SUPABASE_PUBLISHABLE_KEY=$KEY"
           fi
           flutter build apk --release $DART_ARGS
 

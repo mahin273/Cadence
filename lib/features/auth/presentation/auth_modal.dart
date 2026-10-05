@@ -251,8 +251,8 @@ class _AuthModalState extends ConsumerState<AuthModal>
           TextFormField(
             controller: _anonKeyController,
             decoration: const InputDecoration(
-              labelText: 'Anon Public Key',
-              hintText: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
+              labelText: 'Anon / Publishable Key',
+              hintText: 'sb_publishable_... or eyJhbGciOi...',
               prefixIcon: Icon(Icons.key_rounded),
               border: OutlineInputBorder(),
             ),
@@ -260,7 +260,7 @@ class _AuthModalState extends ConsumerState<AuthModal>
             minLines: 1,
             validator: (val) {
               if (val == null || val.trim().isEmpty) {
-                return 'Enter your Supabase anon public key';
+                return 'Enter your Supabase anon or publishable key';
               }
               return null;
             },
