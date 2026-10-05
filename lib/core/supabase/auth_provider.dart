@@ -1,23 +1,66 @@
+import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'auth_state.dart';
 import 'supabase_config.dart';
 
-/// Provider exposing the raw SupabaseClient instance if initialized.
-final supabaseClientProvider = Provider<SupabaseClient?>((ref) {
-  if (SupabaseConfig.isConfigured) {
-    try {
-      return Supabase.instance.client;
-    } catch (_) {
-      return null;
+/// Notifier managing the SupabaseClient instance dynamically.
+class SupabaseClientNotifier extends Notifier<SupabaseClient?> {
+  @override
+  SupabaseClient? build() {
+    if (SupabaseConfig.isConfigured) {
+      try {
+        return Supabase.instance.client;
+      } catch (_) {
+        return null;
+      }
     }
+    return null;
   }
-  return null;
-});
+
+  /// Configure new Supabase project credentials at runtime.
+  Future<bool> configure({
+    required String url,
+    required String anonKey,
+  }) async {
+    final success = await SupabaseConfig.saveConfig(url: url, anonKey: anonKey);
+    if (success) {
+      try {
+        state = Supabase.instance.client;
+        return true;
+      } catch (_) {
+        try {
+          state = SupabaseClient(url, anonKey);
+          return true;
+        } catch (_) {
+          return false;
+        }
+      }
+    }
+    return false;
+  }
+
+  /// Disconnect and remove saved Supabase credentials.
+  Future<void> clearConfig() async {
+    await SupabaseConfig.clearConfig();
+    state = null;
+  }
+}
+
+final supabaseClientProvider =
+    NotifierProvider<SupabaseClientNotifier, SupabaseClient?>(
+  SupabaseClientNotifier.new,
+);
 
 class AuthNotifier extends Notifier<CadenceAuthState> {
+  StreamSubscription<AuthState>? _authSub;
+
   @override
   CadenceAuthState build() {
+    ref.onDispose(() {
+      _authSub?.cancel();
+    });
+
     final client = ref.watch(supabaseClientProvider);
     if (client != null) {
       final currentUser = client.auth.currentUser;
@@ -26,7 +69,8 @@ class AuthNotifier extends Notifier<CadenceAuthState> {
       }
 
       // Listen to auth state changes from GoTrue
-      client.auth.onAuthStateChange.listen((data) {
+      _authSub?.cancel();
+      _authSub = client.auth.onAuthStateChange.listen((data) {
         final session = data.session;
         if (session != null) {
           state = CadenceAuthState.authenticated(session.user);
