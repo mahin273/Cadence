@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/route_models.dart';
 import '../providers/route_recording_provider.dart';
+import 'route_map_view.dart';
 
 /// Interactive UI Card for controlling GPS Route Recording.
 class RouteRecordingCard extends ConsumerStatefulWidget {
@@ -74,6 +75,11 @@ class _RouteRecordingCardState extends ConsumerState<RouteRecordingCard> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            if (ref.watch(routeRecordingProvider).errorMessage != null)
+              _buildErrorBanner(
+                context,
+                ref.watch(routeRecordingProvider).errorMessage!,
+              ),
             Row(
               children: [
                 Container(
@@ -256,6 +262,14 @@ class _RouteRecordingCardState extends ConsumerState<RouteRecordingCard> {
                 ),
               ],
             ),
+            if (state.coordinates.isNotEmpty) ...[
+              const SizedBox(height: 16),
+              RouteMapView(
+                points: state.coordinates,
+                height: 180,
+                interactive: true,
+              ),
+            ],
             const SizedBox(height: 20),
 
             // Control Buttons Row
@@ -368,6 +382,14 @@ class _RouteRecordingCardState extends ConsumerState<RouteRecordingCard> {
                 ),
               ],
             ),
+            if (state.coordinates.isNotEmpty) ...[
+              const SizedBox(height: 16),
+              RouteMapView(
+                points: state.coordinates,
+                height: 180,
+                interactive: true,
+              ),
+            ],
             const SizedBox(height: 16),
             SizedBox(
               width: double.infinity,
@@ -380,6 +402,89 @@ class _RouteRecordingCardState extends ConsumerState<RouteRecordingCard> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildErrorBanner(BuildContext context, String errorMessage) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final isGps = errorMessage.toLowerCase().contains('gps') ||
+        errorMessage.toLowerCase().contains('service');
+    final isPerm = errorMessage.toLowerCase().contains('permission') ||
+        errorMessage.toLowerCase().contains('setting');
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16.0),
+      padding: const EdgeInsets.all(12.0),
+      decoration: BoxDecoration(
+        color: colorScheme.errorContainer.withValues(alpha: 0.7),
+        borderRadius: BorderRadius.circular(16.0),
+        border: Border.all(color: colorScheme.error.withValues(alpha: 0.3)),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(Icons.location_off_rounded,
+              color: colorScheme.onErrorContainer, size: 22),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Location Warning',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 13,
+                    color: colorScheme.onErrorContainer,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  errorMessage,
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: colorScheme.onErrorContainer,
+                  ),
+                ),
+                if (isGps || isPerm) ...[
+                  const SizedBox(height: 8),
+                  FilledButton.tonal(
+                    style: FilledButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 6),
+                      minimumSize: Size.zero,
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    ),
+                    onPressed: () {
+                      if (isGps) {
+                        ref
+                            .read(routeRecordingProvider.notifier)
+                            .openLocationSettings();
+                      } else {
+                        ref
+                            .read(routeRecordingProvider.notifier)
+                            .openSettings();
+                      }
+                    },
+                    child: Text(
+                      isGps ? 'Enable GPS' : 'Open Settings',
+                      style: const TextStyle(fontSize: 12),
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+          IconButton(
+            icon: const Icon(Icons.close_rounded, size: 18),
+            color: colorScheme.onErrorContainer,
+            visualDensity: VisualDensity.compact,
+            onPressed: () {
+              ref.read(routeRecordingProvider.notifier).clearError();
+            },
+          ),
+        ],
       ),
     );
   }

@@ -1,5 +1,6 @@
 import 'package:cadence/core/database/app_database.dart';
 import 'package:cadence/core/database/database_provider.dart';
+import 'package:cadence/features/movement/models/route_models.dart';
 import 'package:cadence/features/movement/providers/route_recording_provider.dart';
 import 'package:cadence/features/movement/widgets/recent_routes_list.dart';
 import 'package:cadence/features/movement/widgets/route_detail_sheet.dart';
@@ -89,6 +90,73 @@ void main() {
       expect(find.byType(PolylineLayer), findsOneWidget);
       expect(find.byType(MarkerLayer), findsOneWidget);
       expect(find.byIcon(Icons.center_focus_strong_rounded), findsOneWidget);
+    });
+
+    testWidgets('RouteMapView renders with GeoCoordinate points without error',
+        (tester) async {
+      final geoPoints = [
+        GeoCoordinate(
+          latitude: 40.7128,
+          longitude: -74.0060,
+          timestamp: DateTime.now(),
+        ),
+        GeoCoordinate(
+          latitude: 40.7135,
+          longitude: -74.0050,
+          timestamp: DateTime.now(),
+        ),
+      ];
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: RouteMapView(points: geoPoints),
+          ),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      expect(find.byType(FlutterMap), findsOneWidget);
+      expect(find.byType(PolylineLayer), findsOneWidget);
+      expect(find.byType(MarkerLayer), findsOneWidget);
+    });
+
+    testWidgets('RouteMapView handles zero-area degenerate bounds without NaN errors',
+        (tester) async {
+      // Multiple points with the exact same coordinate
+      final identicalPoints = [
+        GeoCoordinate(
+          latitude: 51.5074,
+          longitude: -0.1278,
+          timestamp: DateTime.now(),
+        ),
+        GeoCoordinate(
+          latitude: 51.5074,
+          longitude: -0.1278,
+          timestamp: DateTime.now(),
+        ),
+      ];
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: RouteMapView(points: identicalPoints),
+          ),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      expect(find.byType(FlutterMap), findsOneWidget);
+      expect(find.byType(MarkerLayer), findsOneWidget);
+
+      // Verify tapping recenter FAB works without throwing NaN exception
+      final recenterBtn = find.byIcon(Icons.center_focus_strong_rounded);
+      if (recenterBtn.evaluate().isNotEmpty) {
+        await tester.tap(recenterBtn);
+        await tester.pumpAndSettle();
+      }
     });
   });
 

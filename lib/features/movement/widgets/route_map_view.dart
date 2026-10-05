@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
-import '../../../core/database/app_database.dart';
 
 /// Reusable interactive OpenStreetMap view for rendering GPS routes.
 class RouteMapView extends StatefulWidget {
-  final List<RoutePoint> points;
+  final List<dynamic> points;
   final bool interactive;
   final double? height;
   final Color? polylineColor;
@@ -37,13 +36,18 @@ class _RouteMapViewState extends State<RouteMapView> {
     super.dispose();
   }
 
-  void _recenterRoute(LatLngBounds bounds) {
-    _mapController.fitCamera(
-      CameraFit.bounds(
-        bounds: bounds,
-        padding: const EdgeInsets.all(32.0),
-      ),
-    );
+  void _recenterRoute(LatLngBounds? bounds, LatLng fallbackCenter) {
+    if (bounds == null ||
+        (bounds.north == bounds.south && bounds.east == bounds.west)) {
+      _mapController.move(fallbackCenter, 16.0);
+    } else {
+      _mapController.fitCamera(
+        CameraFit.bounds(
+          bounds: bounds,
+          padding: const EdgeInsets.all(32.0),
+        ),
+      );
+    }
   }
 
   @override
@@ -77,13 +81,25 @@ class _RouteMapViewState extends State<RouteMapView> {
       );
     }
 
-    final latLngs = widget.points
-        .map((p) => LatLng(p.latitude, p.longitude))
-        .toList(growable: false);
+    final latLngs = widget.points.map((p) {
+      if (p is LatLng) return p;
+      return LatLng(
+        (p.latitude as num).toDouble(),
+        (p.longitude as num).toDouble(),
+      );
+    }).toList(growable: false);
 
+    final LatLng centerPoint = latLngs.first;
     final isSinglePoint = latLngs.length == 1;
-    final LatLngBounds? bounds =
+
+    final LatLngBounds? rawBounds =
         isSinglePoint ? null : LatLngBounds.fromPoints(latLngs);
+
+    final bool isZeroArea = rawBounds != null &&
+        rawBounds.north == rawBounds.south &&
+        rawBounds.east == rawBounds.west;
+
+    final LatLngBounds? bounds = isZeroArea ? null : rawBounds;
 
     final mapContent = ClipRRect(
       borderRadius: BorderRadius.circular(16.0),
@@ -92,8 +108,8 @@ class _RouteMapViewState extends State<RouteMapView> {
           FlutterMap(
             mapController: _mapController,
             options: MapOptions(
-              initialCenter: isSinglePoint ? latLngs.first : const LatLng(0, 0),
-              initialZoom: isSinglePoint ? 15.0 : 13.0,
+              initialCenter: bounds != null ? bounds.center : centerPoint,
+              initialZoom: bounds != null ? 14.0 : 16.0,
               initialCameraFit: bounds != null
                   ? CameraFit.bounds(
                       bounds: bounds,
@@ -109,7 +125,11 @@ class _RouteMapViewState extends State<RouteMapView> {
             children: [
               TileLayer(
                 urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                userAgentPackageName: 'com.cadence.app',
+                fallbackUrl:
+                    'https://a.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png',
+                userAgentPackageName: 'com.cadence.cadence',
+                maxZoom: 19,
+                minZoom: 1,
               ),
               if (latLngs.length >= 2)
                 PolylineLayer(
@@ -147,8 +167,8 @@ class _RouteMapViewState extends State<RouteMapView> {
                       ),
                     ),
                   ),
-                  // Finish Pin (if multiple points)
-                  if (!isSinglePoint)
+                  // Finish Pin (if multiple distinct points)
+                  if (!isSinglePoint && !isZeroArea)
                     Marker(
                       point: latLngs.last,
                       width: 32,
@@ -177,7 +197,7 @@ class _RouteMapViewState extends State<RouteMapView> {
             ],
           ),
           // Recenter FAB
-          if (widget.interactive && bounds != null)
+          if (widget.interactive && (bounds != null || rawBounds != null || latLngs.length > 1))
             Positioned(
               right: 12,
               bottom: 12,
@@ -186,7 +206,7 @@ class _RouteMapViewState extends State<RouteMapView> {
                 tooltip: 'Recenter Trail',
                 backgroundColor: colorScheme.surfaceContainerHighest,
                 foregroundColor: colorScheme.onSurface,
-                onPressed: () => _recenterRoute(bounds),
+                onPressed: () => _recenterRoute(bounds, centerPoint),
                 child: const Icon(Icons.center_focus_strong_rounded, size: 20),
               ),
             ),

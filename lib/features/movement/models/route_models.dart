@@ -72,6 +72,7 @@ class RouteRecordingState {
   final double currentPaceSecondsPerKm;
   final double avgPaceSecondsPerKm;
   final int recordedPointsCount;
+  final List<GeoCoordinate> coordinates;
   final GeoCoordinate? lastPosition;
   final String? errorMessage;
 
@@ -85,6 +86,7 @@ class RouteRecordingState {
     this.currentPaceSecondsPerKm = 0.0,
     this.avgPaceSecondsPerKm = 0.0,
     this.recordedPointsCount = 0,
+    this.coordinates = const [],
     this.lastPosition,
     this.errorMessage,
   });
@@ -140,6 +142,7 @@ class RouteRecordingState {
     double? currentPaceSecondsPerKm,
     double? avgPaceSecondsPerKm,
     int? recordedPointsCount,
+    List<GeoCoordinate>? coordinates,
     GeoCoordinate? lastPosition,
     String? errorMessage,
     bool clearError = false,
@@ -154,6 +157,7 @@ class RouteRecordingState {
       currentPaceSecondsPerKm: currentPaceSecondsPerKm ?? this.currentPaceSecondsPerKm,
       avgPaceSecondsPerKm: avgPaceSecondsPerKm ?? this.avgPaceSecondsPerKm,
       recordedPointsCount: recordedPointsCount ?? this.recordedPointsCount,
+      coordinates: coordinates ?? this.coordinates,
       lastPosition: lastPosition ?? this.lastPosition,
       errorMessage: clearError ? null : (errorMessage ?? this.errorMessage),
     );

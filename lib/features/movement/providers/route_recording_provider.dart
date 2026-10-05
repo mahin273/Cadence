@@ -98,6 +98,7 @@ class RouteRecordingNotifier extends Notifier<RouteRecordingState> {
       currentPaceSecondsPerKm: 0.0,
       avgPaceSecondsPerKm: 0.0,
       recordedPointsCount: 0,
+      coordinates: const [],
       lastPosition: null,
       errorMessage: null,
     );
@@ -111,7 +112,28 @@ class RouteRecordingNotifier extends Notifier<RouteRecordingState> {
     // 7. Subscribe to GPS position stream
     _subscribeToPositions(mockPositionStream);
 
-    // 8. Update foreground notification if active
+    // 8. Capture immediate initial GPS coordinate fix
+    if (mockPositionStream == null) {
+      Geolocator.getCurrentPosition(
+        locationSettings: const LocationSettings(
+          accuracy: LocationAccuracy.medium,
+          timeLimit: Duration(seconds: 4),
+        ),
+      ).then((pos) {
+        if (state.isRecording && state.recordedPointsCount == 0) {
+          processPosition(
+            latitude: pos.latitude,
+            longitude: pos.longitude,
+            altitude: pos.altitude,
+            speed: pos.speed,
+            accuracy: pos.accuracy,
+            timestamp: pos.timestamp,
+          );
+        }
+      }).catchError((_) {});
+    }
+
+    // 9. Update foreground notification if active
     _updateForegroundNotification();
 
     return true;
@@ -253,8 +275,9 @@ class RouteRecordingNotifier extends Notifier<RouteRecordingState> {
   }) {
     if (!state.isRecording || state.routeId == null) return;
 
-    // 1. Accuracy filter
-    if (accuracy != null && accuracy > minAccuracyMeters) {
+    // 1. Accuracy filter (allow up to 45m on the very first point to ensure initial lock)
+    final maxAccuracy = state.recordedPointsCount == 0 ? 45.0 : minAccuracyMeters;
+    if (accuracy != null && accuracy > maxAccuracy) {
       return; // Discard inaccurate reading
     }
 
@@ -314,12 +337,17 @@ class RouteRecordingNotifier extends Notifier<RouteRecordingState> {
       ),
     );
 
+    final updatedCoordinates = List<GeoCoordinate>.from(state.coordinates)
+      ..add(newCoord);
+
     state = state.copyWith(
       distanceMeters: newTotalDistance,
       avgPaceSecondsPerKm: avgPace,
       currentPaceSecondsPerKm: currentPace,
       recordedPointsCount: newPointsCount,
+      coordinates: updatedCoordinates,
       lastPosition: newCoord,
+      clearError: true,
     );
 
     // 5. Check if buffer reached batch limit
@@ -404,7 +432,13 @@ class RouteRecordingNotifier extends Notifier<RouteRecordingState> {
 
   Future<bool> _checkLocationService() async {
     try {
-      return await Geolocator.isLocationServiceEnabled();
+      final enabled = await Geolocator.isLocationServiceEnabled();
+      if (!enabled) {
+        state = state.copyWith(
+          errorMessage: 'Location services are disabled. Please turn on GPS.',
+        );
+      }
+      return enabled;
     } catch (_) {
       return false;
     }
@@ -416,11 +450,40 @@ class RouteRecordingNotifier extends Notifier<RouteRecordingState> {
       if (permission == LocationPermission.denied) {
         permission = await Geolocator.requestPermission();
       }
-      return permission == LocationPermission.always ||
+      if (permission == LocationPermission.deniedForever) {
+        state = state.copyWith(
+          errorMessage:
+              'Location permission is permanently denied. Tap to open Settings.',
+        );
+        return false;
+      }
+      final isGranted = permission == LocationPermission.always ||
           permission == LocationPermission.whileInUse;
-    } catch (_) {
+      if (!isGranted) {
+        state = state.copyWith(
+          errorMessage: 'Location permission was denied. Tap to grant permission.',
+        );
+      }
+      return isGranted;
+    } catch (e) {
+      state = state.copyWith(errorMessage: 'Location permission error: $e');
       return false;
     }
+  }
+
+  /// Open application permission settings
+  Future<void> openSettings() async {
+    await Geolocator.openAppSettings();
+  }
+
+  /// Open device GPS/location settings
+  Future<void> openLocationSettings() async {
+    await Geolocator.openLocationSettings();
+  }
+
+  /// Clear any active error message
+  void clearError() {
+    state = state.copyWith(clearError: true);
   }
 
   void _updateForegroundNotification() {
