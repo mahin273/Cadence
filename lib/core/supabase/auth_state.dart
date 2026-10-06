@@ -1,6 +1,7 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 enum AuthStatus {
+  unauthenticated,
   guest,
   authenticated,
   loading,
@@ -20,6 +21,11 @@ class CadenceAuthState {
     this.user,
     this.errorMessage,
   });
+
+  const CadenceAuthState.unauthenticated()
+      : status = AuthStatus.unauthenticated,
+        user = null,
+        errorMessage = null;
 
   const CadenceAuthState.guest()
       : status = AuthStatus.guest,
@@ -45,5 +51,7 @@ class CadenceAuthState {
 
   bool get isAuthenticated => status == AuthStatus.authenticated && user != null;
   bool get isGuest => status == AuthStatus.guest;
+  bool get isUnauthenticated => status == AuthStatus.unauthenticated;
   bool get isLoading => status == AuthStatus.loading;
 }
+

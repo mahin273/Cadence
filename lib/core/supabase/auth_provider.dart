@@ -62,7 +62,7 @@ class AuthNotifier extends Notifier<CadenceAuthState> {
     });
 
     final client = ref.watch(supabaseClientProvider);
-    if (client != null) {
+    if (client != null && SupabaseConfig.isConfigured) {
       final currentUser = client.auth.currentUser;
       if (currentUser != null) {
         return CadenceAuthState.authenticated(currentUser);
@@ -75,9 +75,11 @@ class AuthNotifier extends Notifier<CadenceAuthState> {
         if (session != null) {
           state = CadenceAuthState.authenticated(session.user);
         } else {
-          state = const CadenceAuthState.guest();
+          state = const CadenceAuthState.unauthenticated();
         }
       });
+
+      return const CadenceAuthState.unauthenticated();
     }
 
     return const CadenceAuthState.guest();
@@ -101,7 +103,7 @@ class AuthNotifier extends Notifier<CadenceAuthState> {
       if (response.user != null) {
         state = CadenceAuthState.authenticated(response.user!);
       } else {
-        state = const CadenceAuthState.guest();
+        state = const CadenceAuthState.unauthenticated();
       }
     } on AuthException catch (e) {
       state = CadenceAuthState.error(e.message);
@@ -126,9 +128,15 @@ class AuthNotifier extends Notifier<CadenceAuthState> {
         password: password,
       );
       if (response.user != null) {
-        state = CadenceAuthState.authenticated(response.user!);
+        if (response.session != null) {
+          state = CadenceAuthState.authenticated(response.user!);
+        } else {
+          state = const CadenceAuthState.error(
+            'Account created! Please check your email to verify before signing in.',
+          );
+        }
       } else {
-        state = const CadenceAuthState.guest();
+        state = const CadenceAuthState.unauthenticated();
       }
     } on AuthException catch (e) {
       state = CadenceAuthState.error(e.message);
@@ -142,11 +150,19 @@ class AuthNotifier extends Notifier<CadenceAuthState> {
     if (client != null) {
       await client.auth.signOut();
     }
-    state = const CadenceAuthState.guest();
+    state = SupabaseConfig.isConfigured
+        ? const CadenceAuthState.unauthenticated()
+        : const CadenceAuthState.guest();
   }
 
   void continueAsGuest() {
     state = const CadenceAuthState.guest();
+  }
+
+  void clearError() {
+    if (state.errorMessage != null) {
+      state = const CadenceAuthState.unauthenticated();
+    }
   }
 }
 

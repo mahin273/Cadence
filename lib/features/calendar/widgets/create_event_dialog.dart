@@ -70,8 +70,13 @@ class _CreateCalendarEventDialogState
       final baseDate = widget.initialDate ?? DateTime.now();
       _selectedDate = DateTime(baseDate.year, baseDate.month, baseDate.day);
       final now = DateTime.now();
-      _startTime = TimeOfDay(hour: now.hour, minute: 0);
-      _endTime = TimeOfDay(hour: (now.hour + 1) % 24, minute: 0);
+      if (now.hour >= 23) {
+        _startTime = const TimeOfDay(hour: 22, minute: 0);
+        _endTime = const TimeOfDay(hour: 23, minute: 0);
+      } else {
+        _startTime = TimeOfDay(hour: now.hour, minute: 0);
+        _endTime = TimeOfDay(hour: now.hour + 1, minute: 0);
+      }
       _isAllDay = false;
       _selectedCategory = 'personal';
       _customColorValue = null;
@@ -147,7 +152,12 @@ class _CreateCalendarEventDialogState
       startDateTime = _combineDateAndTime(_selectedDate, _startTime);
       endDateTime = _combineDateAndTime(_selectedDate, _endTime);
 
-      if (endDateTime.isBefore(startDateTime) || endDateTime.isAtSameMomentAs(startDateTime)) {
+      if (endDateTime.isBefore(startDateTime)) {
+        // Event spans overnight across midnight into next day
+        endDateTime = endDateTime.add(const Duration(days: 1));
+      }
+
+      if (endDateTime.isAtSameMomentAs(startDateTime)) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('End time must be after start time'),
@@ -157,6 +167,7 @@ class _CreateCalendarEventDialogState
         return;
       }
     }
+
 
     setState(() => _isSaving = true);
 

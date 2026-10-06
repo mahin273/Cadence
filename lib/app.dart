@@ -5,6 +5,8 @@ import 'core/theme/circadian_theme.dart';
 import 'core/theme/theme_provider.dart';
 import 'core/security/security_providers.dart';
 import 'core/security/presentation/app_lock_screen.dart';
+import 'core/supabase/auth_provider.dart';
+import 'features/auth/presentation/auth_screen.dart';
 import 'features/dashboard/presentation/dashboard_screen.dart';
 
 class CadenceApp extends ConsumerWidget {
@@ -66,6 +68,10 @@ class CadenceApp extends ConsumerWidget {
               final isLocked = ref.watch(isAppLockedProvider);
               if (isLocked) {
                 return const AppLockScreen();
+              }
+              final authState = ref.watch(authNotifierProvider);
+              if (!authState.isAuthenticated && !authState.isGuest) {
+                return const AuthScreen();
               }
               return const DashboardScreen();
             },
