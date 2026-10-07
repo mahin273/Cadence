@@ -141,10 +141,18 @@ class SyncService {
         message: 'Synced: $pushed pushed, $pulled pulled',
       );
     } catch (e) {
+      String errorMessage = 'Sync error: $e';
+      if (e is PostgrestException) {
+        if (e.code == 'PGRST205' || e.message.contains('Could not find the table')) {
+          errorMessage = 'Database table "entries" not found in Supabase. Run SQL migrations in Supabase SQL Editor.';
+        } else {
+          errorMessage = 'Cloud database error: ${e.message}';
+        }
+      }
       return SyncInfo(
         status: SyncStatus.error,
         lastSyncedAt: lastSyncedAt,
-        message: 'Sync error: $e',
+        message: errorMessage,
       );
     }
   }
