@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/supabase/auth_provider.dart';
-import '../../../core/supabase/supabase_config.dart';
-import 'auth_modal.dart';
 
 class AuthScreen extends ConsumerStatefulWidget {
   const AuthScreen({super.key});
@@ -308,41 +306,6 @@ class _AuthScreenState extends ConsumerState<AuthScreen>
                       style: theme.textTheme.bodySmall?.copyWith(
                         color: colorScheme.onSurfaceVariant,
                         fontSize: 11,
-                      ),
-                    ),
-                    const SizedBox(height: 24),
-
-                    // Backend Connection Status / Setup
-                    Center(
-                      child: InkWell(
-                        onTap: () => AuthModal.show(context),
-                        borderRadius: BorderRadius.circular(8),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 8,
-                            vertical: 4,
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(
-                                Icons.cloud_outlined,
-                                size: 14,
-                                color: colorScheme.onSurfaceVariant,
-                              ),
-                              const SizedBox(width: 6),
-                              Text(
-                                SupabaseConfig.isConfigured
-                                    ? 'Connected to Cadence Cloud'
-                                    : 'Offline Mode (Configure Backend)',
-                                style: theme.textTheme.bodySmall?.copyWith(
-                                  color: colorScheme.onSurfaceVariant,
-                                  decoration: TextDecoration.underline,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
                       ),
                     ),
                   ],
