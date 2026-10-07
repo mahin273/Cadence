@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="1024" height="1024">
+  <defs>
+    <linearGradient id="barGrad1" x1="0%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" stop-color="#06B6D4"/>
+      <stop offset="100%" stop-color="#3B82F6"/>
+    </linearGradient>
+    <linearGradient id="barGrad2" x1="0%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" stop-color="#3B82F6"/>
+      <stop offset="100%" stop-color="#8B5CF6"/>
+    </linearGradient>
+    <linearGradient id="barGradTop" x1="0%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" stop-color="#F97316"/>
+      <stop offset="100%" stop-color="#FBBF24"/>
+    </linearGradient>
+    <linearGradient id="barGradBottom" x1="0%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" stop-color="#8B5CF6"/>
+      <stop offset="100%" stop-color="#EC4899"/>
+    </linearGradient>
+    <filter id="glowB" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="12" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Transparent Background for Adaptive Foreground -->
+  <rect x="136" y="160" width="42" height="192" rx="21" fill="url(#barGrad2)" filter="url(#glowB)"/>
+  <rect x="198" y="116" width="42" height="280" rx="21" fill="url(#barGrad1)" filter="url(#glowB)"/>
+  <rect x="260" y="116" width="42" height="116" rx="21" fill="url(#barGradTop)" filter="url(#glowB)"/>
+  <rect x="322" y="136" width="42" height="76" rx="21" fill="#F59E0B" filter="url(#glowB)"/>
+  <rect x="260" y="280" width="42" height="116" rx="21" fill="url(#barGradBottom)" filter="url(#glowB)"/>
+  <rect x="322" y="300" width="42" height="76" rx="21" fill="url(#barGrad2)" filter="url(#glowB)"/>
+  <circle cx="332" cy="256" r="16" fill="#38BDF8" filter="url(#glowB)"/>
+</svg>
