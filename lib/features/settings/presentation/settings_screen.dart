@@ -10,6 +10,7 @@ import '../../../core/sync/sync_provider.dart';
 import '../../../core/theme/circadian_theme.dart';
 import '../../../core/theme/theme_provider.dart';
 import '../../auth/presentation/auth_modal.dart';
+import '../../notifications/presentation/circadian_nudges_settings_view.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -50,7 +51,11 @@ class SettingsScreen extends ConsumerWidget {
           ),
           const SizedBox(height: 16),
 
-          // 3. Daily Targets and Goals
+          // 3. Circadian Nudges & Notifications
+          _buildNotificationsSection(context, colorScheme, theme),
+          const SizedBox(height: 16),
+
+          // 4. Daily Targets and Goals
           _buildGoalsSection(context, ref, settings, colorScheme, theme),
           const SizedBox(height: 16),
 
@@ -853,6 +858,29 @@ class SettingsScreen extends ConsumerWidget {
             child: const Text('Save'),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildNotificationsSection(
+    BuildContext context,
+    ColorScheme colorScheme,
+    ThemeData theme,
+  ) {
+    return Card(
+      child: ListTile(
+        leading: Icon(
+          Icons.notifications_active_outlined,
+          color: colorScheme.primary,
+        ),
+        title: const Text('Circadian Nudges & Notifications'),
+        subtitle: const Text('Paced hydration, phase shifts & focus recovery'),
+        trailing: const Icon(Icons.chevron_right),
+        onTap: () => Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (_) => const CircadianNudgesSettingsView(),
+          ),
+        ),
       ),
     );
   }
