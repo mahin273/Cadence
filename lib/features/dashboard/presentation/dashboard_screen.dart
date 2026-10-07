@@ -23,6 +23,8 @@ import '../../review/presentation/weekly_review_view.dart';
 import '../../review/providers/weekly_review_providers.dart';
 import '../../analytics/widgets/screen_time_card.dart';
 import '../../settings/presentation/settings_screen.dart';
+import '../../intelligence/presentation/life_intelligence_screen.dart';
+import '../../intelligence/providers/intelligence_providers.dart';
 
 class DashboardScreen extends ConsumerStatefulWidget {
   const DashboardScreen({super.key});
@@ -453,6 +455,11 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
 
           const SizedBox(height: 16),
 
+          // Cross-Domain Life Intelligence & Correlations
+          const _LifeIntelligenceBannerCard(),
+
+          const SizedBox(height: 16),
+
           // Screen Time & Digital Wellbeing
           const ScreenTimeCard(),
 
@@ -571,6 +578,131 @@ class _WeeklyReviewBannerCard extends ConsumerWidget {
               onPressed: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(builder: (_) => const WeeklyReviewView()),
+                );
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _LifeIntelligenceBannerCard extends ConsumerWidget {
+  const _LifeIntelligenceBannerCard();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final reportAsync = ref.watch(lifeIntelligenceProvider);
+
+    return Card(
+      elevation: 0,
+      color: theme.colorScheme.tertiaryContainer.withAlpha(50),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+        side: BorderSide(
+          color: theme.colorScheme.tertiary.withAlpha(60),
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.tertiary.withAlpha(35),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Icon(
+                    Icons.psychology_outlined,
+                    color: theme.colorScheme.tertiary,
+                    size: 22,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Life Intelligence',
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(
+                        'Cross-domain behavioral correlations',
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: theme.colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                reportAsync.maybeWhen(
+                  data: (report) {
+                    if (report.insights.isNotEmpty) {
+                      return Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: theme.colorScheme.tertiary.withAlpha(35),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Text(
+                          '${report.insights.length} Patterns',
+                          style: theme.textTheme.labelMedium?.copyWith(
+                            fontWeight: FontWeight.w800,
+                            color: theme.colorScheme.tertiary,
+                          ),
+                        ),
+                      );
+                    }
+                    return const SizedBox.shrink();
+                  },
+                  orElse: () => const SizedBox.shrink(),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            reportAsync.maybeWhen(
+              data: (report) {
+                if (report.strongestCorrelation != null) {
+                  return Text(
+                    report.strongestCorrelation!.headline,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+                  );
+                }
+                return Text(
+                  'Analyze how your study sessions, screen time, water intake, and movement influence each other.',
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: theme.colorScheme.onSurfaceVariant,
+                  ),
+                );
+              },
+              orElse: () => Text(
+                'Analyze how your study sessions, screen time, water intake, and movement influence each other.',
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
+              ),
+            ),
+            const SizedBox(height: 12),
+            FilledButton.tonalIcon(
+              icon: const Icon(Icons.auto_awesome_rounded, size: 18),
+              label: const Text('Explore Correlations & Insights'),
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => const LifeIntelligenceScreen(),
+                  ),
                 );
               },
             ),

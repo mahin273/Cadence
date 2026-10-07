@@ -86,8 +86,12 @@ void main() {
     expect(find.text('Supabase Cloud Account'), findsNothing);
 
     // Verify Activity Feed section and filter chips (scroll past the
-    // Chunk 24 hero greeting + vitals header first).
-    await tester.drag(find.byType(ListView).first, const Offset(0, -1400));
+    // hero greeting + vitals header and banner cards first).
+    await tester.scrollUntilVisible(
+      find.text("Today's Activity Feed"),
+      300.0,
+      scrollable: find.byType(Scrollable).first,
+    );
     await tester.pump(const Duration(milliseconds: 500));
     expect(find.text("Today's Activity Feed"), findsOneWidget);
     expect(find.text('All Activity'), findsOneWidget);
