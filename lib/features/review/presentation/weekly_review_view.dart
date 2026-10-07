@@ -5,6 +5,7 @@ import '../models/weekly_summary_data.dart';
 import '../providers/weekly_review_providers.dart';
 import '../widgets/score_gauge.dart';
 import '../widgets/weekly_domain_card.dart';
+import '../../reports/presentation/visual_report_card_screen.dart';
 
 /// Full screen view presenting the cross-module weekly review and reflection journal.
 class WeeklyReviewView extends ConsumerStatefulWidget {
@@ -43,6 +44,17 @@ class _WeeklyReviewViewState extends ConsumerState<WeeklyReviewView> {
         title: const Text('Weekly Review'),
         centerTitle: true,
         actions: [
+          IconButton(
+            tooltip: 'Visual Report Card & Export',
+            icon: const Icon(Icons.badge_outlined),
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => const VisualReportCardScreen(),
+                ),
+              );
+            },
+          ),
           IconButton(
             tooltip: 'Current Week',
             icon: const Icon(Icons.today_rounded),

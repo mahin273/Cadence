@@ -11,6 +11,7 @@ import '../../../core/theme/circadian_theme.dart';
 import '../../../core/theme/theme_provider.dart';
 import '../../auth/presentation/auth_modal.dart';
 import '../../notifications/presentation/circadian_nudges_settings_view.dart';
+import '../../reports/presentation/visual_report_card_screen.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -693,6 +694,20 @@ class SettingsScreen extends ConsumerWidget {
               onPressed: () => ref.read(syncNotifierProvider.notifier).syncNow(),
               child: const Text('Sync Now'),
             ),
+          ),
+          const Divider(),
+          ListTile(
+            leading: Icon(Icons.assessment_outlined, color: colorScheme.primary),
+            title: const Text('Visual Report Card & Export'),
+            subtitle: const Text('Consistency grades, shareable summaries & CSV exports'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => const VisualReportCardScreen(),
+                ),
+              );
+            },
           ),
         ],
       ),
