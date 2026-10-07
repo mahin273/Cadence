@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import '../providers/routines_provider.dart';
 import '../widgets/create_routine_dialog.dart';
 import '../widgets/routine_card.dart';
+import '../heatmaps/presentation/widgets/streak_summary_card.dart';
 
 /// Comprehensive dashboard view for managing and completing daily routines.
 class RoutinesView extends ConsumerWidget {
@@ -137,6 +138,14 @@ class RoutinesView extends ConsumerWidget {
                   const SizedBox(height: 16),
                 ],
               ),
+            ),
+          ),
+
+          // Consistency & Habit Streak Heatmap
+          const SliverToBoxAdapter(
+            child: Padding(
+              padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 16.0),
+              child: StreakSummaryCard(),
             ),
           ),
 

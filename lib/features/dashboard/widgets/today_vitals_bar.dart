@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import '../providers/vitals_provider.dart';
+import '../../routines/heatmaps/providers/habit_streak_providers.dart';
+import '../../routines/heatmaps/models/habit_streak_models.dart';
 
 /// Horizontal daily vitals glance bar: screen time, spend, focus, routines.
 ///
@@ -14,6 +16,7 @@ class TodayVitalsBar extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final vitals = ref.watch(todayVitalsSummaryProvider);
+    final streakStats = ref.watch(habitStreakStatsProvider).value ?? StreakStats.empty();
     final currency = NumberFormat.simpleCurrency();
 
     return SizedBox(
@@ -21,6 +24,13 @@ class TodayVitalsBar extends ConsumerWidget {
       child: ListView(
         scrollDirection: Axis.horizontal,
         children: [
+          _VitalChip(
+            icon: Icons.local_fire_department_rounded,
+            label: 'Streak',
+            value: '${streakStats.currentStreak}d',
+            sub: 'Best: ${streakStats.longestStreak}d',
+            color: Colors.deepOrange,
+          ),
           _VitalChip(
             icon: Icons.smartphone_rounded,
             label: 'Screen',
