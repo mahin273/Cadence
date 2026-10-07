@@ -37,12 +37,6 @@ void main() {
     expect(find.text('Finance'), findsOneWidget);
     expect(find.text('Planner'), findsOneWidget);
 
-    // Verify Circadian preview controls are present
-    expect(find.text('Preview Circadian Shifts (Color.lerp)'), findsOneWidget);
-    expect(find.text('Day (12:00)'), findsOneWidget);
-    expect(find.text('Dusk (20:00)'), findsOneWidget);
-    expect(find.text('Night (23:00)'), findsOneWidget);
-
     // Verify Drift SQLite status card initially has 0 entries
     expect(find.text('Local SQLite (Drift)'), findsOneWidget);
     expect(find.text('0 entries'), findsOneWidget);
@@ -56,12 +50,26 @@ void main() {
     // Verify reactive stream update: counter increments to 1
     expect(find.text('1 entries'), findsOneWidget);
 
+    // Tap Settings icon to access Theme and Circadian Shift controls
+    await tester.tap(find.byIcon(Icons.settings_outlined));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Settings'), findsOneWidget);
+    expect(find.text('Preview Circadian Shifts (Color.lerp)'), findsOneWidget);
+    expect(find.text('Day (12:00)'), findsOneWidget);
+    expect(find.text('Dusk (20:00)'), findsOneWidget);
+    expect(find.text('Night (23:00)'), findsOneWidget);
+
     // Tap Dusk preview chip
     await tester.tap(find.text('Dusk (20:00)'));
     await tester.pumpAndSettle();
 
-    // Verify transition to Dusk phase
+    // Verify transition to Dusk phase within Settings
     expect(find.text('Warm Dusk Transition'), findsOneWidget);
+
+    // Return back to dashboard
+    await tester.pageBack();
+    await tester.pumpAndSettle();
 
     // Tap account icon to open AuthModal
     await tester.tap(find.byIcon(Icons.account_circle_outlined));
