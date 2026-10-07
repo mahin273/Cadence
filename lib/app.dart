@@ -9,11 +9,56 @@ import 'core/supabase/auth_provider.dart';
 import 'features/auth/presentation/auth_screen.dart';
 import 'features/dashboard/presentation/dashboard_screen.dart';
 
-class CadenceApp extends ConsumerWidget {
+import 'dart:async';
+import 'package:home_widget/home_widget.dart';
+import 'features/widgets/providers/home_widget_providers.dart';
+
+class CadenceApp extends ConsumerStatefulWidget {
   const CadenceApp({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<CadenceApp> createState() => _CadenceAppState();
+}
+
+class _CadenceAppState extends ConsumerState<CadenceApp> {
+  StreamSubscription<Uri?>? _widgetClickSub;
+
+  @override
+  void initState() {
+    super.initState();
+    _initHomeWidgetListener();
+  }
+
+  void _initHomeWidgetListener() {
+    try {
+      HomeWidget.initiallyLaunchedFromHomeWidget().then((uri) {
+        if (uri != null) {
+          _handleWidgetUri(uri);
+        }
+      });
+      _widgetClickSub = HomeWidget.widgetClicked.listen((uri) {
+        if (uri != null) {
+          _handleWidgetUri(uri);
+        }
+      });
+    } catch (_) {
+      // Platform channels may be absent during testing
+    }
+  }
+
+  void _handleWidgetUri(Uri uri) {
+    ref.read(homeWidgetSyncServiceProvider).handleQuickAction(uri);
+  }
+
+  @override
+  void dispose() {
+    _widgetClickSub?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    ref.watch(activeWidgetSyncDataProvider);
     final themeSettings = ref.watch(themeSettingsProvider);
 
     return DynamicColorBuilder(

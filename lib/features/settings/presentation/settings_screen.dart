@@ -12,6 +12,7 @@ import '../../../core/theme/theme_provider.dart';
 import '../../auth/presentation/auth_modal.dart';
 import '../../notifications/presentation/circadian_nudges_settings_view.dart';
 import '../../reports/presentation/visual_report_card_screen.dart';
+import '../../widgets/providers/home_widget_providers.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -76,11 +77,15 @@ class SettingsScreen extends ConsumerWidget {
           _buildSyncSection(context, ref, settings, colorScheme, theme),
           const SizedBox(height: 16),
 
-          // 8. Security and Privacy
+          // 8. Android Home Screen Widget
+          _buildWidgetSection(context, ref, colorScheme, theme),
+          const SizedBox(height: 16),
+
+          // 9. Security and Privacy
           _buildSecuritySection(context, ref, colorScheme, theme),
           const SizedBox(height: 16),
 
-          // 9. About Cadence
+          // 10. About Cadence
           _buildAboutSection(colorScheme, theme),
           const SizedBox(height: 32),
         ],
@@ -937,5 +942,137 @@ class SettingsScreen extends ConsumerWidget {
       case CircadianPhase.dawn:
         return 'Gradual sunrise luminance gently waking your daily cadence.';
     }
+  }
+
+  Widget _buildWidgetSection(
+    BuildContext context,
+    WidgetRef ref,
+    ColorScheme colorScheme,
+    ThemeData theme,
+  ) {
+    final syncDataAsync = ref.watch(activeWidgetSyncDataProvider);
+
+    return Card(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+            child: Row(
+              children: [
+                Icon(Icons.widgets_outlined,
+                    color: colorScheme.primary, size: 20),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    'Android Home Screen Widget',
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: Text(
+              'Glance at your live focus time, steps, hydration, and streaks without opening Cadence.',
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: colorScheme.onSurfaceVariant,
+              ),
+            ),
+          ),
+          const SizedBox(height: 12),
+          syncDataAsync.when(
+            loading: () => const SizedBox.shrink(),
+            error: (err, _) => Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Text(
+                'Widget status unavailable: $err',
+                style: TextStyle(color: colorScheme.error),
+              ),
+            ),
+            data: (data) => Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: colorScheme.surfaceContainerHighest.withAlpha(50),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    _buildWidgetSummaryItem('Focus', '${data.focusMinutes}m', theme, colorScheme),
+                    _buildWidgetSummaryItem('Steps', '${data.todaySteps}', theme, colorScheme),
+                    _buildWidgetSummaryItem('Water', '${data.waterGlasses} gl', theme, colorScheme),
+                    _buildWidgetSummaryItem('Streak', '${data.streakDays} d', theme, colorScheme),
+                    _buildWidgetSummaryItem('Phase', data.circadianPhase, theme, colorScheme),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 8),
+          ListTile(
+            title: const Text('Update Widget Data'),
+            subtitle: const Text('Manually push current database metrics to the widget'),
+            trailing: FilledButton.tonalIcon(
+              onPressed: () async {
+                final messenger = ScaffoldMessenger.of(context);
+                final service = ref.read(homeWidgetSyncServiceProvider);
+                await service.syncWidget();
+                if (context.mounted) {
+                  messenger.showSnackBar(
+                    const SnackBar(
+                      content: Text('Home screen widget updated successfully.'),
+                    ),
+                  );
+                }
+              },
+              icon: const Icon(Icons.sync_rounded, size: 16),
+              label: const Text('Sync Widget'),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+            child: Text(
+              'Tip: Long-press your phone home screen, choose Widgets, select Cadence, and place the Glance widget on your screen.',
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: colorScheme.onSurfaceVariant,
+                fontStyle: FontStyle.italic,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildWidgetSummaryItem(
+    String label,
+    String value,
+    ThemeData theme,
+    ColorScheme colorScheme,
+  ) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          value,
+          style: theme.textTheme.titleSmall?.copyWith(
+            fontWeight: FontWeight.bold,
+            color: colorScheme.primary,
+          ),
+        ),
+        Text(
+          label,
+          style: theme.textTheme.labelSmall?.copyWith(
+            color: colorScheme.onSurfaceVariant,
+          ),
+        ),
+      ],
+    );
   }
 }
