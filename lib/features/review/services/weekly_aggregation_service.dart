@@ -85,8 +85,10 @@ class WeeklyAggregationService {
     final totalDistanceKm = totalMeters / 1000.0;
 
     // Baseline target: 70,000 steps per week (10k / day)
+    final distanceEquivalentSteps = (totalDistanceKm * 1350).round();
+    final effectiveSteps = totalSteps > 0 ? totalSteps : distanceEquivalentSteps;
     final movementScore =
-        ((totalSteps / 70000.0) * 100).round().clamp(0, 100);
+        ((effectiveSteps / 70000.0) * 100).round().clamp(0, 100);
 
     // 3. Finance Domain (Expenses & Monthly Budget)
     final expenseRecords = await (_db.select(_db.expenses)
@@ -105,13 +107,16 @@ class WeeklyAggregationService {
           ..where((tbl) => tbl.isDeleted.equals(false)))
         .get();
 
-    final monthlyBudget = allBudgets.isEmpty
-        ? 1000.0
-        : allBudgets.fold<double>(0.0, (sum, b) => sum + b.monthlyLimit);
+    final hasBudget = allBudgets.isNotEmpty;
+    final monthlyBudget = hasBudget
+        ? allBudgets.fold<double>(0.0, (sum, b) => sum + b.monthlyLimit)
+        : 0.0;
     final weeklyBudget = monthlyBudget / 4.0;
 
     int budgetScore;
-    if (totalExpenses <= weeklyBudget) {
+    if (!hasBudget) {
+      budgetScore = 0;
+    } else if (totalExpenses <= weeklyBudget) {
       budgetScore = 100;
     } else {
       final overageRatio = (totalExpenses - weeklyBudget) / weeklyBudget;
@@ -125,23 +130,42 @@ class WeeklyAggregationService {
               tbl.completedAt.isSmallerOrEqualValue(weekEnd)))
         .get();
 
-    final allRoutineItems = await _db.select(_db.routineItems).get();
+    final activeRoutines = await (_db.select(_db.routines)
+          ..where((tbl) => tbl.isActive.equals(true)))
+        .get();
+    final activeRoutineIds = activeRoutines.map((r) => r.id).toSet();
+
+    final allRoutineItems = activeRoutineIds.isEmpty
+        ? <RoutineItem>[]
+        : await (_db.select(_db.routineItems)
+              ..where((tbl) => tbl.routineId.isIn(activeRoutineIds)))
+            .get();
+
     final routinePossibleCount = allRoutineItems.length * 7;
     final routineCompletedCount = routineCompletions.length;
 
     final routineScore = routinePossibleCount == 0
-        ? 100
+        ? 0
         : ((routineCompletedCount / routinePossibleCount) * 100)
             .round()
             .clamp(0, 100);
 
     // 5. Balanced Composite Life Rhythm Score (0-100)
-    final compositeScore = ((focusScore * 0.25) +
-            (movementScore * 0.25) +
-            (budgetScore * 0.25) +
-            (routineScore * 0.25))
-        .round()
-        .clamp(0, 100);
+    final activeScores = <int>[];
+    activeScores.add(focusScore);
+    activeScores.add(movementScore);
+    if (hasBudget || totalExpenses > 0) {
+      activeScores.add(budgetScore);
+    }
+    if (allRoutineItems.isNotEmpty) {
+      activeScores.add(routineScore);
+    }
+
+    final compositeScore = activeScores.isEmpty
+        ? 0
+        : (activeScores.reduce((a, b) => a + b) / activeScores.length)
+            .round()
+            .clamp(0, 100);
 
     return WeeklySummaryData(
       weekStartDate: weekStart,

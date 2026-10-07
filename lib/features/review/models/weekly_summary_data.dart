@@ -50,7 +50,7 @@ class WeeklySummaryData {
 
   /// Routine adherence percentage (0-100).
   int get routinePercentage {
-    if (routinePossibleCount == 0) return 100;
+    if (routinePossibleCount == 0) return 0;
     return ((routineCompletedCount / routinePossibleCount) * 100).round().clamp(0, 100);
   }
 

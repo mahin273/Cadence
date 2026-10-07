@@ -138,10 +138,14 @@ class _WeeklyReviewViewState extends ConsumerState<WeeklyReviewView> {
             accentColor: const Color(0xFF10B981), // Green
             score: summary.budgetScore,
             primaryMetric: '\$${summary.totalExpenses.toStringAsFixed(2)} spent',
-            secondaryMetric: '\$${summary.weeklyBudget.toStringAsFixed(2)} weekly budget cap',
-            statusText: summary.totalExpenses <= summary.weeklyBudget
-                ? 'Under Budget'
-                : 'Over Budget',
+            secondaryMetric: summary.weeklyBudget > 0
+                ? '\$${summary.weeklyBudget.toStringAsFixed(2)} weekly budget cap'
+                : 'No budget configured',
+            statusText: summary.weeklyBudget <= 0
+                ? (summary.totalExpenses > 0 ? 'No Budget Set' : 'Untracked')
+                : (summary.totalExpenses <= summary.weeklyBudget
+                    ? 'Under Budget'
+                    : 'Over Budget'),
           ),
           const SizedBox(height: 10),
 
@@ -150,9 +154,13 @@ class _WeeklyReviewViewState extends ConsumerState<WeeklyReviewView> {
             icon: Icons.checklist_rounded,
             accentColor: const Color(0xFFF59E0B), // Amber
             score: summary.routineScore,
-            primaryMetric: '${summary.routineCompletedCount} / ${summary.routinePossibleCount} completed',
+            primaryMetric: summary.routinePossibleCount > 0
+                ? '${summary.routineCompletedCount} / ${summary.routinePossibleCount} completed'
+                : '0 routines configured',
             secondaryMetric: '${summary.routinePercentage}% consistency',
-            statusText: summary.routineScore >= 80 ? 'Solid Habit' : 'Building',
+            statusText: summary.routinePossibleCount == 0
+                ? 'No Routines'
+                : (summary.routineScore >= 80 ? 'Solid Habit' : 'Building'),
           ),
           const SizedBox(height: 28),
 

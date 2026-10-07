@@ -1,3 +1,4 @@
+import 'package:drift/drift.dart' as drift;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/database/app_database.dart';
 import '../../../core/database/database_provider.dart';
@@ -42,11 +43,30 @@ final selectedReviewWeekProvider =
   SelectedReviewWeekNotifier.new,
 );
 
-/// Computes fresh aggregation metrics for any requested week.
+/// Computes fresh aggregation metrics reactively for any requested week.
 final weeklySummaryProvider =
-    FutureProvider.family<WeeklySummaryData, DateTime>((ref, date) async {
+    StreamProvider.family<WeeklySummaryData, DateTime>((ref, date) async* {
+  final db = ref.watch(appDatabaseProvider);
   final service = ref.watch(weeklyAggregationServiceProvider);
-  return service.aggregateWeek(date);
+
+  yield await service.aggregateWeek(date);
+
+  final updateStream = db.tableUpdates(
+    drift.TableUpdateQuery.onAllTables([
+      db.studySessions,
+      db.entries,
+      db.routes,
+      db.expenses,
+      db.budgets,
+      db.routines,
+      db.routineItems,
+      db.routineCompletions,
+    ]),
+  );
+
+  await for (final _ in updateStream) {
+    yield await service.aggregateWeek(date);
+  }
 });
 
 /// Streams persisted review snapshot and reflection notes for a given week.

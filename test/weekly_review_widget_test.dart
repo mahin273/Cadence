@@ -95,7 +95,7 @@ void main() {
         overrides: [
           appDatabaseProvider.overrideWithValue(db),
           weeklySummaryProvider(sampleWeekStart).overrideWith(
-            (ref) => Future.value(testSummary),
+            (ref) => Stream.value(testSummary),
           ),
           savedWeeklyReviewProvider(sampleWeekStart).overrideWith(
             (ref) => Stream.value(null),

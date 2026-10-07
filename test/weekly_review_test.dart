@@ -116,10 +116,11 @@ void main() {
       expect(summary.totalFocusSeconds, 0);
       expect(summary.totalSteps, 0);
       expect(summary.totalExpenses, 0.0);
-      // Under budget (0 <= 250) -> 100
-      expect(summary.budgetScore, 100);
-      // No routines configured -> 100
-      expect(summary.routineScore, 100);
+      // No budget configured -> 0
+      expect(summary.budgetScore, 0);
+      // No routines configured -> 0
+      expect(summary.routineScore, 0);
+      expect(summary.compositeScore, 0);
     });
 
     test('aggregates multi-domain data and calculates composite score', () async {
@@ -150,7 +151,16 @@ void main() {
         ),
       );
 
-      // 3. Insert Expense ($100 spent on $1000/month [$250/wk] budget -> 100%)
+      // 3. Insert Budget ($1000/month [$250/wk]) and Expense ($100 spent -> 100%)
+      await db.into(db.budgets).insert(
+        BudgetsCompanion.insert(
+          id: 'budget-1',
+          userId: 'user-1',
+          category: 'General',
+          monthlyLimit: 1000.0,
+          startDate: monday,
+        ),
+      );
       await db.into(db.expenses).insert(
         ExpensesCompanion(
           id: const Value('exp-1'),
