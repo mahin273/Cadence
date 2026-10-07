@@ -126,6 +126,7 @@ class AuthNotifier extends Notifier<CadenceAuthState> {
       final response = await client.auth.signUp(
         email: email.trim(),
         password: password,
+        emailRedirectTo: 'cadence://login-callback',
       );
       if (response.user != null) {
         if (response.session != null) {

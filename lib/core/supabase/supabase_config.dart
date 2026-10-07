@@ -85,6 +85,9 @@ class SupabaseConfig {
           url: _activeUrl,
           publishableKey: _activeAnonKey,
           debug: kDebugMode,
+          authOptions: const FlutterAuthClientOptions(
+            detectSessionInUri: true,
+          ),
         );
         _initialized = true;
       } catch (e) {
@@ -120,6 +123,9 @@ class SupabaseConfig {
           url: _activeUrl,
           publishableKey: _activeAnonKey,
           debug: kDebugMode,
+          authOptions: const FlutterAuthClientOptions(
+            detectSessionInUri: true,
+          ),
         );
         _initialized = true;
       }
