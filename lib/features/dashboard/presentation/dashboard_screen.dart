@@ -25,6 +25,7 @@ import '../../analytics/widgets/screen_time_card.dart';
 import '../../settings/presentation/settings_screen.dart';
 import '../../intelligence/presentation/life_intelligence_screen.dart';
 import '../../intelligence/providers/intelligence_providers.dart';
+import '../../history/presentation/day_history_screen.dart';
 
 class DashboardScreen extends ConsumerStatefulWidget {
   const DashboardScreen({super.key});
@@ -112,6 +113,13 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
             tooltip: 'Tag Explorer & Search',
             onPressed: () => Navigator.of(context).push(
               MaterialPageRoute(builder: (_) => const TagExplorerView()),
+            ),
+          ),
+          IconButton(
+            icon: const Icon(Icons.history_rounded),
+            tooltip: 'Past Timeline & History',
+            onPressed: () => Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const DayHistoryScreen()),
             ),
           ),
           IconButton(
